@@ -1,0 +1,91 @@
+---
+- block:
+
+  - name: Create build_dir
+    file:
+      state: directory
+      path: "{{ instance_path }}"
+    tags: init
+
+  - stat:
+      path: "{{ instance_path }}"
+    register: existing_instance_path
+    tags: ['init','update','test','rm']
+
+  - name: Changing perm of "{{ instance_path }}"
+    file: dest="{{ instance_path }}" mode=777  recurse=yes
+    tags: ['update','test']
+
+  - name: git clone/pull
+    git:
+      repo: "{{ git_repository_path }}"
+      dest: "{{ instance_path }}"
+      version: "{{ branch }}-build"
+      accept_hostkey: true
+      force: yes
+    tags: ['init','update','test']
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+
+  - name: Create docksal-local.env file
+    template:
+      src: "templates/.docksal/docksal-local.env"
+      dest: "{{ instance_path }}/.docksal/docksal-local.env"
+    tags: ['init']
+
+  - name: Create docksal-local.yml file
+    template:
+      src: "templates/.docksal/docksal-local.yml"
+      dest: "{{ instance_path }}/.docksal/docksal-local.yml"
+    tags: ['init']
+
+  - name: fin up
+    command: fin up
+    args:
+      warn: false
+      chdir: "{{ instance_path }}"
+    tags: ['init', 'update','test']
+
+  - name: Include init tasks
+    include: "{{ hook_init_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_init_tasks.yml') }}"
+    tags: init
+
+  - name: Include update tasks
+    include: "{{ hook_update_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_update_tasks.yml') }}"
+    tags: ['init', 'update','test']
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+
+  - name: Include test tasks
+    include: "{{ hook_test_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_test_tasks.yml') }}"
+    tags: ['test']
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+
+  - name: fin stop
+    command: fin stop
+    args:
+      warn: false
+      chdir: "{{ instance_path }}"
+    tags: ['stop', 'rm']
+    ignore_errors: yes
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+
+  - name: fin rm
+    expect:
+      command: fin rm
+      chdir: "{{ instance_path }}"
+      responses:
+        Continue:
+          - y
+    tags: ['rm']
+    ignore_errors: yes
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+
+  - name: Changing perm of "{{ instance_path }}"
+    file: dest="{{ instance_path }}" mode=777  recurse=yes
+    tags: ['rm']
+
+  - name: Clean instance
+    file:
+      state: absent
+      path: "{{ instance_path }}"
+    tags: ['rm']
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir

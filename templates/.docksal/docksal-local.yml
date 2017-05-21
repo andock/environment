@@ -1,0 +1,10 @@
+# Basic LAMP stack
+version: "2.1"
+services:
+  # CLI
+  cli:
+    environment:
+      - ANDOCK_CI=1
+  web:
+    environment:
+      - ANDOCK_CI=1
