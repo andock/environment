@@ -1,19 +1,26 @@
-andock-ci-build (A drupal docksal build script.)
+andock-ci-fin (fin docksal livecycle. )
 =========
 
 **andock-ci-fin** is a Ansible role which:
-* Checks out a php repository (e.g. from github)
-* Runs build tasks (like composer, npm etc.). We use docksal (http://docksal.io/) because there all gears included to build your projects. But it is not needed. 
-* Pushes all build artifacts to a target build repository (can be a different one like Acquia or the same. Andock CI pushes to {{ branch }}-build branch.)  
+* Checks out or pull a repository (e.g. from github) based on project and branch
+* Configure docksal based on branch.domain (e.g. master-build.myproject.mydomain.de)
+* Runs "fin up" 
+* Runs init hook (configurable with hooks/init_tasks.yml)
+* Runs update hook (configurable with hooks/update_tasks.yml)
+* Runs test hook (configurable with hooks/test_tasks.yml)
+* Runs "fin stop"
+* Runs "fin rm"
+* Clears the instance
   
-
+**The livecycle can be controlled with tags**
+* Clears the instance
 Requirements
 ------------
 
 In order to build your apps with Andock CI, you will need:
 
 * Ansible in your deploy machine
-* build tools like composer or something else
+* Docksal
 * git on both machines
 
 
@@ -21,12 +28,15 @@ Role Variables
 --------------
 
 ```yaml
+---
 vars:
-  git_source_repository_path: git@github.com:andock-ci/drupal-8-demo.git # The source repository 
-  git_target_repository_path: git@github.com:andock-ci/drupal-8-demo-build.git # The target repository. Can be the same repository as the source repository 
-  build_dir: ~/ansible # The path where the build happens
-  branch: "master" # The source branch. The target branch would be master-build
-  hook_build_tasks: "hooks/build_tasks.yml" # The path to your build_tasks hook file
+  git_repository_path: git@github.com:andock-ci/drupal-8-demo-build.git # The source repository
+  project_name: drupal-8-demo-build # The name of the project
+  branch: "master" # The branch to checkout
+  domain: "drupal-8-demo.docksal" # The base domain. The final domain will be master.drupal-8-demo.docksal
+  hook_init_tasks: "hooks/init_tasks.yml" #Task file for the project init. Run site-install here.  
+  hook_update_tasks: "hooks/update_tasks.yml" #Task file for the project init. Run site-install here.
+
 ```
 
 Installation
@@ -35,7 +45,7 @@ Installation
 Andock-CI is an Ansible role distributed globally using [Ansible Galaxy](https://galaxy.ansible.com/). In order to install Andock-CI role you can use the following command.
 
 ```
-$ ansible-galaxy install andock-ci.andock-ci-build
+$ ansible-galaxy install andock-ci.andock-ci-fin
 ```
 
 Update
@@ -44,7 +54,7 @@ Update
 If you want to update the role, you need to pass **--force** parameter when installing. Please, check the following command:
 
 ```
-$ ansible-galaxy install --force andock-ci.andock-ci-build
+$ ansible-galaxy install --force andock-ci.andock-ci-fin
 ```
 
 Dependencies
@@ -55,74 +65,7 @@ Dependencies
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - name: Deploy repository to build repository
-      hosts: localhost
-      remote_user: cw
-      roles:
-        - role: andock-ci-build
-          git_source_repository_path: git@github.com:andock-ci/drupal-8-demo.git
-          git_target_repository_path: git@github.com:andock-ci/drupal-8-demo-build.git
-          build_dir: ~/ansible
-          branch: "master"
-          hook_build_tasks: "hooks/build_tasks.yml"
-
-
-Handling .gitignore 
-----------------
-
-You can mark parts in your .gitignore files with "BEGIN REMOVE ANDOCK-CI" --- END REMOVE ANDOCK-CI.
-andock-ci will remove that blocks before it will be commited to target repository
- 
-
-        #Sample .gitignore file for a drupal 8 composer project
-        .idea
-        
-        #### BEGIN REMOVE ANDOCK-CI ###
-        docroot/core
-        docroot/modules/contrib
-        docroot/themes/contrib
-        docroot/profiles/contrib
-        vendor
-        #### END REMOVE ANDOCK-CI ###
-
-Example gitlab configuration with shell executor 
-----------------
-.gitlab-ci.yml:
-
-    stages:
-      - build
-    
-    before_script:
-      - sudo ansible-galaxy install --force andock-ci.andock-ci-build #Update ansible role
-      # Configure ssh keys (https://docs.gitlab.com/ee/ci/ssh_keys/README.html#ssh-keys-when-using-the-docker-executor)
-    
-    build:
-      stage: build
-      script:
-        - ansible-playbook .ansible/build.yml --extra-vars "branch=$branch build_dir=$CI_PROJECT_DIR/build git_source_repository_path=$CI_REPOSITORY_URL" --connection=local
-
-playbook under .ansible/build.yml
-
-    - name: Deploy repository to build repository
-      hosts: localhost
-      remote_user: user
-      roles:
-        - role: andock-ci-build
-          git_source_repository_path: {{ git_source_repository_path }}
-          git_target_repository_path: git@github.com:andock-ci/drupal-8-demo-build.git
-          build_dir: "{{ build_dir }}"
-          branch: "{{ branch }}"
-          hook_build_tasks: "hooks/build_tasks.yml"
-
-build hooks under .ansible/hooks/build.yml
-
-    - name: composer install
-      command: fin rc -T composer install
-      args:
-        chdir: "{{ build_dir }}"
-
+@TODO
 
 License
 -------
