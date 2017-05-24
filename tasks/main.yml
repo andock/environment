@@ -44,10 +44,12 @@
       warn: false
       chdir: "{{ instance_path }}"
     tags: ['init', 'update','test']
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
 
   - name: Include init tasks
     include: "{{ hook_init_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_init_tasks.yml') }}"
     tags: init
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
 
   - name: Include update tasks
     include: "{{ hook_update_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_update_tasks.yml') }}"
@@ -82,6 +84,7 @@
   - name: Changing perm of "{{ instance_path }}"
     file: dest="{{ instance_path }}" mode=777  recurse=yes
     tags: ['rm']
+    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
 
   - name: Clean instance
     file:
