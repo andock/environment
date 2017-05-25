@@ -1,20 +1,29 @@
 ---
 - block:
 
-  - name: Create build_dir
+  - name: Create instance
     file:
       state: directory
       path: "{{ instance_path }}"
-    tags: init
+    tags: ['init']
 
   - stat:
       path: "{{ instance_path }}"
     register: existing_instance_path
     tags: ['init','update','test','rm']
 
+  - set_fact: instance_exists=existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    tags: ['init','update','test','rm']
+
+  - debug:
+      msg: "Instance: {{ instance_path }}"
+    when: instance_exists
+    tags: ['init','update','test','rm']
+
   - name: Changing perm of "{{ instance_path }}"
     file: dest="{{ instance_path }}" mode=777  recurse=yes
     tags: ['update','test']
+    when: instance_exists
 
   - name: git clone/pull
     git:
@@ -24,19 +33,21 @@
       accept_hostkey: true
       force: yes
     tags: ['init','update','test']
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    when: instance_exists
 
   - name: Create docksal-local.env file
     template:
       src: "templates/.docksal/docksal-local.env"
       dest: "{{ instance_path }}/.docksal/docksal-local.env"
     tags: ['init']
+    when: instance_exists
 
   - name: Create docksal-local.yml file
     template:
       src: "templates/.docksal/docksal-local.yml"
       dest: "{{ instance_path }}/.docksal/docksal-local.yml"
     tags: ['init']
+    when: instance_exists
 
   - name: fin up
     command: fin up
@@ -48,18 +59,28 @@
 
   - name: Include init tasks
     include: "{{ hook_init_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_init_tasks.yml') }}"
-    tags: init
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    tags: ['init']
+    when: instance_exists
 
   - name: Include update tasks
     include: "{{ hook_update_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_update_tasks.yml') }}"
     tags: ['init', 'update','test']
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    when: instance_exists
+
+  - debug:
+      msg: "Instance {{ instance_path }} created. See: {{ instance_protocol }}://{{ instance_domain }}"
+    when: instance_exists
+    tags: ['init']
+
+  - debug:
+      msg: "Instance {{ instance_path }} updated. See: {{ instance_protocol }}://{{ instance_domain }}"
+    when: instance_exists
+    tags: ['update']
 
   - name: Include test tasks
     include: "{{ hook_test_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_test_tasks.yml') }}"
     tags: ['test']
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    when: instance_exists
 
   - name: fin stop
     command: fin stop
@@ -68,7 +89,7 @@
       chdir: "{{ instance_path }}"
     tags: ['stop', 'rm']
     ignore_errors: yes
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    when: instance_exists
 
   - name: fin rm
     expect:
@@ -79,16 +100,16 @@
           - y
     tags: ['rm']
     ignore_errors: yes
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    when: instance_exists
 
   - name: Changing perm of "{{ instance_path }}"
     file: dest="{{ instance_path }}" mode=777  recurse=yes
     tags: ['rm']
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    when: instance_exists
 
   - name: Clean instance
     file:
       state: absent
       path: "{{ instance_path }}"
     tags: ['rm']
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    when: instance_exists
