@@ -1,0 +1,25 @@
+---
+- block:
+  - name: Create andock-ci group
+    group:
+      name: andock-ci
+      state: present
+    become: true
+
+  - name: Create andock-ci user
+    user:
+      name: andock-ci
+      comment: "Andock Ci user"
+      group: andock-ci
+      shell: /bin/bash
+    become: true
+
+  - name: fin install
+    shell: "curl -fsSL get.docksal.io | sh"
+    become: true
+
+  - name: Add andock-ci to docker
+    user:
+      name: andock-ci
+      group: docker
+    become: true
