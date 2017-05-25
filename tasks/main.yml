@@ -66,12 +66,12 @@
     when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
 
   - name: Include init tasks
-    include: "{{ hook_init_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_init_tasks.yml') }}"
+    include: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
     when: instance_exists
 
   - name: Include update tasks
-    include: "{{ hook_update_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_update_tasks.yml') }}"
+    include: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
     tags: ['init', 'update','test']
     when: instance_exists
 
@@ -86,7 +86,7 @@
     tags: ['update']
 
   - name: Include test tasks
-    include: "{{ hook_test_tasks | default(lookup('pipe', 'pwd') ~ '/../hooks/hook_test_tasks.yml') }}"
+    include: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
     tags: ['test']
     when: instance_exists
 
