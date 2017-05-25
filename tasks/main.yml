@@ -1,6 +1,14 @@
 ---
 - block:
 
+  - name: Install docksal
+    include: "{{ role_path }}/tasks/install_docksal.yml"
+    tags: ['install_docksal']
+
+  - name: Uninstall docksal
+    include: "{{ role_path }}/tasks/uninstall_docksal.yml"
+    tags: ['uninstall_docksal']
+
   - name: Create instance
     file:
       state: directory
