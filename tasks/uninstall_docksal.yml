@@ -8,6 +8,7 @@
     become: true
 
   - name: fin uninstall
-    command: "rm -f /usr/local/bin/fin"
+    file:
+      state: absent
+      path: "/usr/local/bin/fin"
     become: true
-

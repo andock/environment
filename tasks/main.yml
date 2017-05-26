@@ -100,12 +100,8 @@
     when: instance_exists
 
   - name: fin rm
-    expect:
-      command: fin rm
-      chdir: "{{ instance_path }}"
-      responses:
-        Continue:
-          - y
+    command: "fin rm -f"
+    chdir: "{{ instance_path }}"
     tags: ['rm']
     ignore_errors: yes
     when: instance_exists
