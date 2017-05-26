@@ -101,7 +101,9 @@
 
   - name: fin rm
     command: "fin rm -f"
-    chdir: "{{ instance_path }}"
+    args:
+      warn: false
+      chdir: "{{ instance_path }}"
     tags: ['rm']
     ignore_errors: yes
     when: instance_exists
