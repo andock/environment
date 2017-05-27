@@ -21,3 +21,4 @@
       path: /etc/profile
       regexp: '^export DOCKSAL_VHOST_PROXY_IP'
       line: 'export DOCKSAL_VHOST_PROXY_IP=0.0.0.0'
+    become: true
