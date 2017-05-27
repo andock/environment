@@ -36,6 +36,16 @@ script:
   # Run the role/playbook with ansible-playbook.
   - ansible-playbook -i tests/inventory tests/test_setup.yml --connection=local --tags install_docksal
 
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags init
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags update
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags test
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags stop
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags rm
+
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   # - >
