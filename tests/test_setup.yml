@@ -1,6 +1,6 @@
 ---
 - name: Init andock-ci instance
-  hosts: andock-ci-root
+  hosts: localhost
   gather_facts: false
   roles:
     - role: andock-ci-fin
