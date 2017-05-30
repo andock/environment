@@ -5,9 +5,9 @@ andock-ci.fin (fin docksal livecycle. )
 * Checks out or pull a repository (e.g. from github) based on project and branch
 * Configure docsal based on branch.domain (e.g. master-build.myproject.mydomain.de)
 * Runs "fin up" 
-* Runs init hook (configurable with hooks/init_tasks.yml)
-* Runs update hook (configurable with hooks/update_tasks.yml)
-* Runs test hook (configurable with hooks/test_tasks.yml)
+* Runs init hook (configurable through hooks/init_tasks.yml)
+* Runs update hook (configurable through hooks/update_tasks.yml)
+* Runs test hook (configurable through hooks/test_tasks.yml)
 * Runs "fin stop"
 * Runs "fin rm"
 * Clears the instance
