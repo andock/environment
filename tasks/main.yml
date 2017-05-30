@@ -18,7 +18,7 @@
   - stat:
       path: "{{ instance_path }}"
     register: existing_instance_path
-    tags: ['init','update','test','rm']
+    tags: ['init','update','test','stop','rm']
 
   - set_fact: instance_exists=existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
     tags: ['init','update','test','rm']

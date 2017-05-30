@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: false
   roles:
-    - role: andock-ci-fin
+    - role: fin
       git_repository_path: git@github.com:andock-ci/drupal-8-demo-build.git
       project_name: drupal-8-demo-build
       branch: "master"

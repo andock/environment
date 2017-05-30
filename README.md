@@ -1,9 +1,9 @@
-andock-ci-fin (fin docksal livecycle. )
+andock-ci.fin (fin docksal livecycle. )
 =========
 
-**andock-ci-fin** is a Ansible role which:
+**andock-ci.fin** is a Ansible role which:
 * Checks out or pull a repository (e.g. from github) based on project and branch
-* Configure docksal based on branch.domain (e.g. master-build.myproject.mydomain.de)
+* Configure docsal based on branch.domain (e.g. master-build.myproject.mydomain.de)
 * Runs "fin up" 
 * Runs init hook (configurable with hooks/init_tasks.yml)
 * Runs update hook (configurable with hooks/update_tasks.yml)
@@ -45,7 +45,7 @@ Installation
 Andock-CI is an Ansible role distributed globally using [Ansible Galaxy](https://galaxy.ansible.com/). In order to install Andock-CI role you can use the following command.
 
 ```
-$ ansible-galaxy install andock-ci.andock-ci-fin
+$ ansible-galaxy install andock-ci.fin
 ```
 
 Update
@@ -54,7 +54,7 @@ Update
 If you want to update the role, you need to pass **--force** parameter when installing. Please, check the following command:
 
 ```
-$ ansible-galaxy install --force andock-ci.andock-ci-fin
+$ ansible-galaxy install --force andock-ci.fin
 ```
 
 Dependencies
