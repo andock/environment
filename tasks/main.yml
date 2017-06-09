@@ -9,6 +9,14 @@
     include: "{{ role_path }}/tasks/uninstall_docksal.yml"
     tags: ['uninstall_docksal']
 
+  - stat:
+      path: "{{ instance_path }}"
+    register: existing_instance_path_before
+    tags: ['init','update','test','stop','rm']
+
+  - set_fact: instance_exists_before=existing_instance_path_before.stat.isdir is defined and existing_instance_path_before.stat.isdir
+    tags: ['init','update','test','rm']
+
   - name: Create instance
     file:
       state: directory
