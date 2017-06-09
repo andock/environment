@@ -1,3 +1,8 @@
+- name: drush create database
+  command: fin exec -T "drush sql-create -y"
+  args:
+    chdir: "{{ docroot_path }}"
+
 - name: drush site install
   command: fin exec -T "drush site-install minimal -y"
   args:
