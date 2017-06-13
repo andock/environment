@@ -28,13 +28,12 @@ install:
   # Install Ansible.
   - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
   - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible-lint; fi
+  - curl -fsSL https://raw.githubusercontent.com/andock-ci/server/master/install-server | sh
 
 script:
   # Check the role/playbook's syntax.
-  - ansible-playbook -i tests/inventory tests/test_setup.yml --syntax-check
 
-  # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i tests/inventory tests/test_setup.yml --connection=local --tags install_docksal
+
 
   - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags init
 

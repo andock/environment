@@ -1,21 +1,13 @@
 ---
 - block:
 
-  - name: Install docksal
-    include: "{{ role_path }}/tasks/install_docksal.yml"
-    tags: ['install_docksal']
-
-  - name: Uninstall docksal
-    include: "{{ role_path }}/tasks/uninstall_docksal.yml"
-    tags: ['uninstall_docksal']
-
   - stat:
       path: "{{ instance_path }}"
     register: existing_instance_path_before
-    tags: ['init','update','test','stop','rm']
+    tags: ['init','up','update','test','stop','rm']
 
   - set_fact: instance_exists_before=existing_instance_path_before.stat.isdir is defined and existing_instance_path_before.stat.isdir
-    tags: ['init','update','test','stop','rm']
+    tags: ['init','up','update','test','stop','rm']
 
   - name: Create instance
     file:
@@ -26,15 +18,15 @@
   - stat:
       path: "{{ instance_path }}"
     register: existing_instance_path
-    tags: ['init','update','test','stop','rm']
+    tags: ['init','up','update','test','stop','rm']
 
   - set_fact: instance_exists=existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
-    tags: ['init','update','test','stop','rm']
+    tags: ['init','up','update','test','stop','rm']
 
   - debug:
       msg: "Instance: {{ instance_path }}"
     when: instance_exists
-    tags: ['init','update','test','rm']
+    tags: ['init','up','update','test','rm']
 
   - name: Changing perm of "{{ instance_path }}"
     file: dest="{{ instance_path }}" mode=777  recurse=yes
@@ -70,7 +62,7 @@
     args:
       warn: false
       chdir: "{{ instance_path }}"
-    tags: ['init', 'update','test']
+    tags: ['init', 'up', 'update','test']
     when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
 
   - name: Include init tasks
