@@ -34,6 +34,17 @@ script:
   # Check the role/playbook's syntax.
 
 
+  # Check everything before the instance is created
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags update
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags test
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags stop
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags rm
+
+  # Create the instance and check it again
 
   - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags init
 

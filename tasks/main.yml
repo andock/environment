@@ -1,12 +1,12 @@
 ---
 - block:
-
-  - stat:
+  - name: "Checking if the instance already exits"
+    stat:
       path: "{{ instance_path }}"
     register: existing_instance_path_before
     tags: ['init','up','update','test','stop','rm']
 
-  - set_fact: instance_exists_before=existing_instance_path_before.stat.isdir is defined and existing_instance_path_before.stat.isdir
+  - set_fact: instance_exists_before=existing_instance_path_before.stat.exists and existing_instance_path_before.stat.isdir
     tags: ['init','up','update','test','stop','rm']
 
   - name: Create instance
@@ -15,16 +15,17 @@
       path: "{{ instance_path }}"
     tags: ['init']
 
-  - stat:
+  - name: "Checking if the instance is exists or created"
+    stat:
       path: "{{ instance_path }}"
     register: existing_instance_path
     tags: ['init','up','update','test','stop','rm']
 
-  - set_fact: instance_exists=existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+  - set_fact: instance_exists=existing_instance_path.stat.exists and existing_instance_path_before.stat.isdir
     tags: ['init','up','update','test','stop','rm']
 
   - debug:
-      msg: "Instance: {{ instance_path }}"
+      msg: "Instance: {{ instance_path }} {{ instance_exists }}"
     when: instance_exists
     tags: ['init','up','update','test','rm']
 

@@ -1,11 +1,11 @@
 ---
 - name: Init andock-ci instance
-  hosts: localhost
+  hosts: andock-ci-fin-server
   gather_facts: false
   roles:
     - role: fin
       git_repository_path: git@github.com:andock-ci/drupal-8-demo-build.git
-      project_name: drupal-8-demo-build
+      project_name: drupal-8-demo
       branch: "master"
       domain: "drupal-8-demo.docksal"
       hook_init_tasks: "hooks/init_tasks.yml"
