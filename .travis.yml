@@ -30,7 +30,7 @@ install:
   # - if [ "$ANSIBLE_VERSION" = "latest" ]; pip install ansible-lint; fi
   - curl -fsSL https://raw.githubusercontent.com/andock-ci/server/master/install-server | sh
   - sudo apt install openssh-server
-  - cp tests/authorized_keys /home/andock-ci/authorized_keys
+  - sudo cp tests/authorized_keys /home/andock-ci/authorized_keys
 script:
   # Check the role/playbook's syntax.
 
