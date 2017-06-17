@@ -31,6 +31,8 @@ install:
   - curl -fsSL https://raw.githubusercontent.com/andock-ci/server/master/install-server | sh
   - sudo apt install openssh-server
   - sudo cp tests/authorized_keys /home/andock-ci/authorized_keys
+  - sudo chown andock-ci:docker /home/andock-ci/authorized_keys
+  - sudo chmod 600 /home/andock-ci/authorized_keys
 script:
   # Check the role/playbook's syntax.
 
