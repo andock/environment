@@ -26,11 +26,8 @@ before_install:
 
 install:
   # Install Ansible.
-   - if [ "$ANSIBLE_VERSION" = "latest" ]; pip install --user ansible; else pip install ansible==$ANSIBLE_VERSION; fi
-   - if [ "$ANSIBLE_VERSION" = "latest" ]; pip install ansible-lint; fi
-  - sudo apt-get install ansible
-  - sudo ansible --version
-  - ansible --version
+  #- if [ "$ANSIBLE_VERSION" = "latest" ]; pip install --user ansible; else pip install ansible==$ANSIBLE_VERSION; fi
+  # - if [ "$ANSIBLE_VERSION" = "latest" ]; pip install ansible-lint; fi
   - curl -fsSL https://raw.githubusercontent.com/andock-ci/server/master/install-server | sh
 
 script:
