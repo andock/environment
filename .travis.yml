@@ -36,26 +36,26 @@ script:
 
   # Check everything before the instance is created
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags update
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags update
 
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags test
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags test
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags stop
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags stop
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags rm
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags rm
 
   # Create the instance and check it again
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags init
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags init
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags update
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags update
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags test
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags test
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags stop
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags stop
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --connection=local --tags rm
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags rm
 
 
   # Run the role/playbook again, checking to make sure it's idempotent.
