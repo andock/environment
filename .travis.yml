@@ -35,7 +35,8 @@ install:
   - sudo chmod 600 /home/andock-ci/.ssh/authorized_keys
   - sudo cp /home/travis/.ssh/id_rsa /home/andock-ci/id_rsa
   - sudo chown andock-ci:docker /home/andock-ci/.ssh/id_rsa
-
+  - sudo chmod 400 /home/andock-ci/.ssh/id_rsa
+  - cat /home/andock-ci/.ssh/id_rsa
 script:
   # Check the role/playbook's syntax.
 
