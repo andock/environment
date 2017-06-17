@@ -1,5 +1,5 @@
 [andock-ci-build-server]
-localhost   ansible_connection=local host_key_checking = False
+localhost ansible_connection=local host_key_checking=false
 
 [andock-ci-fin-server]
-localhost ansible_connection=ssh ansible_ssh_user=andock-ci host_key_checking = False
+localhost ansible_connection=ssh ansible_ssh_user=andock-ci host_key_checking=false
