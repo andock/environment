@@ -38,6 +38,7 @@ install:
   - sudo chmod 400 /home/andock-ci/.ssh/id_rsa
   # - ssh-add /home/andock-ci/.ssh/id_rsa
   - sudo cat /home/andock-ci/.ssh/id_rsa
+  - sudo cp ssh-config /home/andock-ci/.ssh/config
 script:
   # Check the role/playbook's syntax.
 
