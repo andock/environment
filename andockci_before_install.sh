@@ -6,6 +6,7 @@ sudo chown andock-ci:docker /home/andock-ci/.ssh/id_rsa
 sudo chmod 600 /home/andock-ci/.ssh/id_rsa
 sudo cp ssh-config /home/andock-ci/.ssh/config
 sudo chown andock-ci:docker /home/andock-ci/.ssh/config
-ssh -o StrictHostKeyChecking=no andock-ci@localhost "eval `ssh-agent -s`;ssh-add /home/andock-ci/.ssh/id_rsa"
+pwd
+ssh -o StrictHostKeyChecking=no andock-ci@localhost "/home/travis/fin/andoc_ci.sh"
 
 
