@@ -41,6 +41,7 @@
       version: "{{ branch }}-build"
       accept_hostkey: true
       force: yes
+      key_file: "/home/andock-ci/.ssh/id_rsa"
     tags: ['init','update','test']
     when: instance_exists
 
