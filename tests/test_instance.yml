@@ -5,7 +5,7 @@
   roles:
     - role: fin
       git_repository_path: git@github.com:andock-ci/drupal-8-demo-build.git
-      project_name: drupal-8-demo
+      project_name: drupal-8-demo-fin
       branch: "master"
       domain: "drupal-8-demo.docksal"
       hook_init_tasks: "hooks/init_tasks.yml"

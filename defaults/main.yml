@@ -12,6 +12,8 @@ env_path: ~/andock-ci/envs
 
 instance_path: "{{ env_path }}/{{ project_name }}/{{ project_name }}--{{branch}}"
 
+alias: "{{ project_name }}.{{branch}}"
+
 docroot_path: "{{ instance_path }}/{{ docroot }}"
 
 site_path: "{{ docroot_path }}/sites/{{ site }}"
