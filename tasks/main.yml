@@ -6,7 +6,7 @@
     register: existing_instance_path_before
     tags: ['init','up','update','test','stop','rm']
 
-  - set_fact: instance_exists_before=existing_instance_path_before.stat.exists and existing_instance_path_before.stat.isdir
+  - set_fact: instance_exists_before="{{ existing_instance_path_before.stat.exists }}"
     tags: ['init','up','update','test','stop','rm']
 
   - name: Create instance
@@ -21,13 +21,8 @@
     register: existing_instance_path
     tags: ['init','up','update','test','stop','rm']
 
-  - set_fact: instance_exists=existing_instance_path.stat.exists and existing_instance_path_before.stat.isdir
+  - set_fact: instance_exists="{{ existing_instance_path.stat.exists }}"
     tags: ['init','up','update','test','stop','rm']
-
-  - debug:
-      msg: "Instance: {{ instance_path }} {{ instance_exists }}"
-    when: instance_exists
-    tags: ['init','up','update','test','rm']
 
   - name: Changing perm of "{{ instance_path }}"
     file: dest="{{ instance_path }}" mode=777  recurse=yes
@@ -64,10 +59,18 @@
       warn: false
       chdir: "{{ instance_path }}"
     tags: ['init', 'up', 'update','test']
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    when: instance_exists
 
   - name: Include init tasks
     include: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
+    tags: ['init']
+    when: instance_exists
+
+  - name: "Add alias {{ alias }}"
+    command: "fin alias {{ instance_path }} {{ alias }}"
+    args:
+      warn: false
+      chdir: "{{ instance_path }}"
     tags: ['init']
     when: instance_exists
 
@@ -97,6 +100,15 @@
       warn: false
       chdir: "{{ instance_path }}"
     tags: ['stop', 'rm']
+    ignore_errors: yes
+    when: instance_exists
+
+  - name: "Remove alias {{ alias }}"
+    command: "fin alias remove {{ alias }}"
+    args:
+      warn: false
+      chdir: "{{ instance_path }}"
+    tags: ['rm']
     ignore_errors: yes
     when: instance_exists
 
