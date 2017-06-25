@@ -29,10 +29,6 @@ before_install:
   - sudo ls -al /home/andock-ci
   - sudo ls -al /home/andock-ci/.ssh
 script:
-  # Check the role/playbook's syntax.
-  - ssh -o StrictHostKeyChecking=no andock-ci@127.0.0.1 "ls -al"
-
-  # Check everything before the instance is created
 
   - ansible-playbook -i tests/inventory tests/test_instance.yml --tags update
 
