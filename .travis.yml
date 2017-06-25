@@ -27,9 +27,6 @@ before_install:
   - curl -fsSL https://raw.githubusercontent.com/andock-ci/server/master/install-server | sh
   - sudo apt install openssh-server
   - acs ssh-add "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC5KlE6U+/dHoDpbygR+Zk/2otZWvpcz34O9zSCHzIBqTLcv3UMhMHCI3YQXpj7EhI5WJop7DHI/vrjpE0Dyaei1OtoNjN32aMEArdQWNvqODKPuC446PbnntTJt/RnxWu3aaj6Ocbx1J79X9CJZk1KdYV4rwsS8XXTjszIBAw50ETBT1SxDST7Rw9QtyGMrt8RCzsR07JT9pjoR1JblXQ76Uwc3gKdaaMjNz1HOoIXNFk8y4iJbr8qgCX38nHGZZlfYO+8gE1ZuBql0qSBRtXh+lKuZJG8Eg4o454bPPRYHx78fKWAGTWMNQxyxSCR8nfqWh5K8eaLojeWsHvFzSCzQBBiFECEigJCkt5xEblLbhYTwpXHfTdrk+KvVJ9AFoveFelXDkHise8VPipkzMnW/26s3k3I7neVK23zgF4BdtsAh8mWWI51VcKeYOKoV76BN4FK5JIHML1HtsotmT8TUTr2loDS33bIf2yox1gnxlZnIwec1obtPaJ8M/meOJlp5QRzNL59M/PKiyiuIeXXmRQXJfl9gmkMiHhQFH5QRUCXA9fmy+dDpgvJvHtdcIAw9VmHVbl+wU9PR56mQoaryBWKlIn3Jes03QaW7gqA5JQ293OBItnqvFLuj3tt9hdaF+KSLcwwTtZ3ATVUAowq26p1xaS13xDlJba8ZTlr1w== info@andock-ci.io"
-  - sudo ls /home/andock-ci/.ssh
-  - ./andockci_before_install.sh
-  - fin update
 script:
   # Check the role/playbook's syntax.
 
@@ -47,6 +44,9 @@ script:
   # Create the instance and check it again
 
   - ansible-playbook -i tests/inventory tests/test_instance.yml --tags init
+
+  - sudo ls -al /home/andock-ci/andock-ci/envs
+  - sudo ls -al /home/andock-ci/andock-ci/envs/drupal-8-demo-fin
 
   - ansible-playbook -i tests/inventory tests/test_instance.yml --tags update
 
