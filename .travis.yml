@@ -30,7 +30,7 @@ before_install:
   - sudo ls -al /home/andock-ci/.ssh
 script:
   # Check the role/playbook's syntax.
-  ssh andock-ci@localhost "ls -al"
+  - ssh andock-ci@localhost "ls -al"
 
   # Check everything before the instance is created
 
