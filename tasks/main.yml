@@ -76,7 +76,7 @@
 
   - name: Include update tasks
     include: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
-    tags: ['init', 'update','test']
+    tags: ['update']
     when: instance_exists
 
   - debug:
