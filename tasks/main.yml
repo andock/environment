@@ -1,134 +1,127 @@
 ---
 - block:
-  - name: "Checking if the instance already exits"
+  - name: "Check whether the environment already exists.."
     stat:
-      path: "{{ instance_path }}"
-    register: existing_instance_path_before
+      path: "{{ environment_path }}"
+    register: existing_environment_path_before
     tags: ['init','up','update','test','stop','rm']
 
-  - set_fact: instance_exists_before="{{ existing_instance_path_before.stat.exists }}"
+  - name: "Set fact environment_exists_before (Environment already exists..)"
+    set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
     tags: ['init','up','update','test','stop','rm']
 
-  - name: Create instance
+  - name: "Create environment folder"
     file:
       state: directory
-      path: "{{ instance_path }}"
+      path: "{{ environment_path }}"
     tags: ['init']
 
-  - name: "Checking if the instance is exists or created"
+  - name: "Check whether the environment exists or has created.."
     stat:
-      path: "{{ instance_path }}"
-    register: existing_instance_path
+      path: "{{ environment_path }}"
+    register: existing_environment_path
     tags: ['init','up','update','test','stop','rm']
 
-  - set_fact: instance_exists="{{ existing_instance_path.stat.exists }}"
+  - name: "Set fact environment_exists (Environment exists or has created..)"
+    set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
     tags: ['init','up','update','test','stop','rm']
 
-  - name: Changing perm of "{{ instance_path }}"
-    file: dest="{{ instance_path }}" mode=777  recurse=yes
+  - name: "Prepare update."
+    file: dest="{{ environment_path }}" mode=777  recurse=yes
     tags: ['update','test']
-    when: instance_exists
+    when: environment_exists
 
-  - name: git clone/pull
+  - name: "Clone or pull repository"
     git:
       repo: "{{ git_repository_path }}"
-      dest: "{{ instance_path }}"
+      dest: "{{ environment_path }}"
       version: "{{ branch }}-build"
       accept_hostkey: true
       force: yes
     tags: ['init','update','test']
-    when: instance_exists
+    when: environment_exists
 
-  - name: Create docksal-local.env file
+  - name: "Create docksal-local.env file"
     template:
       src: "templates/.docksal/docksal-local.env"
-      dest: "{{ instance_path }}/.docksal/docksal-local.env"
+      dest: "{{ environment_path }}/.docksal/docksal-local.env"
     tags: ['init']
-    when: instance_exists
+    when: environment_exists
 
-  - name: Create docksal-local.yml file
+  - name: "Create docksal-local.yml file"
     template:
       src: "templates/.docksal/docksal-local.yml"
-      dest: "{{ instance_path }}/.docksal/docksal-local.yml"
+      dest: "{{ environment_path }}/.docksal/docksal-local.yml"
     tags: ['init']
-    when: instance_exists
+    when: environment_exists
 
-  - name: fin up
+  - name: "Start environment services (fin up)"
     command: fin up
     args:
       warn: false
-      chdir: "{{ instance_path }}"
+      chdir: "{{ environment_path }}"
     tags: ['init', 'up', 'update','test']
-    when: instance_exists
+    when: environment_exists
 
-  - name: Include init tasks
+  - name: "Include init tasks"
     include: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
-    when: instance_exists
+    when: environment_exists
 
-  - name: "Add alias {{ alias }}"
-    command: "fin alias {{ instance_path }} {{ alias }}"
+  - name: "Add environment alias (fin alias {{ alias }})"
+    command: "fin alias {{ environment_path }} {{ alias }}"
     args:
       warn: false
-      chdir: "{{ instance_path }}"
+      chdir: "{{ environment_path }}"
     tags: ['init']
-    when: instance_exists
+    when: environment_exists
 
-  - name: Include update tasks
+  - name: "Include update tasks"
     include: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
     tags: ['update']
-    when: instance_exists
+    when: environment_exists
 
-  - debug:
-      msg: "Instance {{ instance_path }} created. See: {{ instance_protocol }}://{{ instance_domain }}"
-    when: instance_exists
-    tags: ['init']
-
-  - debug:
-      msg: "Instance {{ instance_path }} updated. See: {{ instance_protocol }}://{{ instance_domain }}"
-    when: instance_exists
-    tags: ['update']
-
-  - name: Include test tasks
+  - name: "Include test tasks"
     include: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
     tags: ['test']
-    when: instance_exists
+    when: environment_exists
 
-  - name: fin stop
+  - name: "Stop Environmnet (fin stop)"
     command: fin stop
     args:
       warn: false
-      chdir: "{{ instance_path }}"
+      chdir: "{{ environment_path }}"
     tags: ['stop', 'rm']
     ignore_errors: yes
-    when: instance_exists
+    when: environment_exists
 
-  - name: "Remove alias {{ alias }}"
+  - name: "Remove environmnet alias {{ alias }}"
     command: "fin alias remove {{ alias }}"
     args:
       warn: false
-      chdir: "{{ instance_path }}"
+      chdir: "{{ environment_path }}"
     tags: ['rm']
     ignore_errors: yes
-    when: instance_exists
+    when: environment_exists
 
-  - name: fin rm
+  - name: "Remove environmnet services (fin rm)"
     command: "fin rm -f"
     args:
       warn: false
-      chdir: "{{ instance_path }}"
+      chdir: "{{ environment_path }}"
     tags: ['rm']
     ignore_errors: yes
-    when: instance_exists
+    when: environment_exists
 
-  - name: Changing perm of "{{ instance_path }}"
-    file: dest="{{ instance_path }}" mode=777  recurse=yes
+  - name: "Clear Prepare."
+    file: dest="{{ environment_path }}" mode=777  recurse=yes
     tags: ['rm']
-    when: instance_exists
+    ignore_errors: yes
+    when: environment_exists
 
-  - name: Clean instance
+  - name: "Remove environment folder"
     file:
       state: absent
-      path: "{{ instance_path }}"
+      path: "{{ environment_path }}"
     tags: ['rm']
-    when: instance_exists
+    when: environment_exists

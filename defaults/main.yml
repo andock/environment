@@ -8,16 +8,14 @@ docroot: "docroot"
 
 site: "default"
 
-env_path: ~/andock-ci/envs
+envs_path: ~/andock-ci/envs
 
-instance_path: "{{ env_path }}/{{ project_name }}/{{ project_name }}--{{branch}}"
+environment_path: "{{ envs_path }}/{{ project_name }}/{{ project_name }}--{{branch}}"
+
+environment_protocol: http
 
 alias: "{{ project_name }}.{{branch}}"
 
-docroot_path: "{{ instance_path }}/{{ docroot }}"
+docroot_path: "{{ environment_path }}/{{ docroot }}"
 
 site_path: "{{ docroot_path }}/sites/{{ site }}"
-
-env_path: ~/andock-ci/envs
-
-instance_protocol: http
