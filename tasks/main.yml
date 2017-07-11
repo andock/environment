@@ -74,7 +74,9 @@
       warn: false
       chdir: "{{ environment_path }}"
     tags: ['init']
-    when: environment_exists
+    when:
+      - environment_exists
+      - environment_exists_before == false
 
   - name: "Include update tasks"
     include: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
