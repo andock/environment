@@ -16,6 +16,4 @@ site_path: "{{ docroot_path }}/sites/{{ site }}"
 
 env_path: ~/andock-ci/envs
 
-instance_domain: "{{branch}}.{{domain}}"
-
 instance_protocol: http
