@@ -19,3 +19,5 @@ alias: "{{ project_name }}.{{branch}}"
 docroot_path: "{{ environment_path }}/{{ docroot }}"
 
 site_path: "{{ docroot_path }}/sites/{{ site }}"
+
+docksal_env: []
