@@ -1,13 +1,13 @@
 ---
 - block:
+  - name: "Checking if the instance already exits"
+    stat:
+      path: "{{ instance_path }}"
+    register: existing_instance_path_before
+    tags: ['init','up','update','test','stop','rm']
 
-  - name: Install docksal
-    include: "{{ role_path }}/tasks/install_docksal.yml"
-    tags: ['install_docksal']
-
-  - name: Uninstall docksal
-    include: "{{ role_path }}/tasks/uninstall_docksal.yml"
-    tags: ['uninstall_docksal']
+  - set_fact: instance_exists_before="{{ existing_instance_path_before.stat.exists }}"
+    tags: ['init','up','update','test','stop','rm']
 
   - name: Create instance
     file:
@@ -15,18 +15,14 @@
       path: "{{ instance_path }}"
     tags: ['init']
 
-  - stat:
+  - name: "Checking if the instance is exists or created"
+    stat:
       path: "{{ instance_path }}"
     register: existing_instance_path
-    tags: ['init','update','test','rm']
+    tags: ['init','up','update','test','stop','rm']
 
-  - set_fact: instance_exists=existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
-    tags: ['init','update','test','rm']
-
-  - debug:
-      msg: "Instance: {{ instance_path }}"
-    when: instance_exists
-    tags: ['init','update','test','rm']
+  - set_fact: instance_exists="{{ existing_instance_path.stat.exists }}"
+    tags: ['init','up','update','test','stop','rm']
 
   - name: Changing perm of "{{ instance_path }}"
     file: dest="{{ instance_path }}" mode=777  recurse=yes
@@ -62,17 +58,25 @@
     args:
       warn: false
       chdir: "{{ instance_path }}"
-    tags: ['init', 'update','test']
-    when: existing_instance_path.stat.isdir is defined and existing_instance_path.stat.isdir
+    tags: ['init', 'up', 'update','test']
+    when: instance_exists
 
   - name: Include init tasks
     include: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
     when: instance_exists
 
+  - name: "Add alias {{ alias }}"
+    command: "fin alias {{ instance_path }} {{ alias }}"
+    args:
+      warn: false
+      chdir: "{{ instance_path }}"
+    tags: ['init']
+    when: instance_exists
+
   - name: Include update tasks
     include: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
-    tags: ['init', 'update','test']
+    tags: ['update']
     when: instance_exists
 
   - debug:
@@ -96,6 +100,15 @@
       warn: false
       chdir: "{{ instance_path }}"
     tags: ['stop', 'rm']
+    ignore_errors: yes
+    when: instance_exists
+
+  - name: "Remove alias {{ alias }}"
+    command: "fin alias remove {{ alias }}"
+    args:
+      warn: false
+      chdir: "{{ instance_path }}"
+    tags: ['rm']
     ignore_errors: yes
     when: instance_exists
 

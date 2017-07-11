@@ -13,7 +13,7 @@ env:
   - ANSIBLE_VERSION=latest
   global:
   - secure: QCN/3wjqP+Dr0o3dU5TE+gmJgpziglMfqYnxuWnwO4mercNhRAtNatH11coOt9hA+y7tcSCnR2+CPx0PfoIy3aITW1OY7WzD7DfgfAS7WgeRPdGNWmpKvy5wn5OjDZoAaIA5xaTzDwUATqNiYJhzhM5eFzpemPOOimWpzfGNxVuj2uWeb+ILf4JRC+L3xiqAtBH7NDvyJgsJ55kFEnbAB8vBERBhZu736Y36Cr6l02IF6F/1ljS1vb56t4iFF/WekffBqXptjnn9bKYK+QYPAfPRnMgKdiJ9MHB23FenlTv2v4fOMbNyCDpbKvsbqMeNbvlCrWKnGGARGP1ch89RqU0jTZFkloSKQvcVnWpy1el2S8hE8wKnxGqwD+i5AGZyxenbv8d+p27ienQtNQk/ukZdr70GlscEtLwUF9d/uh8Hj0gph4NPEjuS6c5x/JDYMEEwiTf2B4k/2tdG2W0prBgkY3LrTAuTUL2109mFpmOs/RVsMglLj9SsSbFBYMmOLqG+oaiJJNq6tD0/FcZhlpblrxKyrQQ3NmUdnVbzRjp8q1p9yn7uoc8QJrRvdZStnZwQ5V6EHVXgvbzg8oS6C/EQ3DUFXF/5wjhysKl6wKk1mGqyYKw5cB8LemSX0zKVN8RPm7IOgh5kpcAzSc/ISfRp8IfvW7nv4eGBf/43Upc=
-  - ENCRYPTION_LABEL: "fd8f491f9db9"
+  - ENCRYPTION_LABEL: "6f215de00b79"
   - COMMIT_AUTHOR_EMAIL: "christian.wiedemann@key-tec.de"
 
 branches:
@@ -21,30 +21,36 @@ branches:
     - master
 
 before_install:
-  # Install php and curl
   - ./before_install.sh
-
-install:
-  # Install Ansible.
-  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
-  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible-lint; fi
-
+  - git clone git@github.com:andock-ci/drupal-8-demo-build.git
+  - curl -fsSL https://raw.githubusercontent.com/andock-ci/server/master/install-server | sh
+  - sudo apt install openssh-server
+  - acs ssh-add "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC5KlE6U+/dHoDpbygR+Zk/2otZWvpcz34O9zSCHzIBqTLcv3UMhMHCI3YQXpj7EhI5WJop7DHI/vrjpE0Dyaei1OtoNjN32aMEArdQWNvqODKPuC446PbnntTJt/RnxWu3aaj6Ocbx1J79X9CJZk1KdYV4rwsS8XXTjszIBAw50ETBT1SxDST7Rw9QtyGMrt8RCzsR07JT9pjoR1JblXQ76Uwc3gKdaaMjNz1HOoIXNFk8y4iJbr8qgCX38nHGZZlfYO+8gE1ZuBql0qSBRtXh+lKuZJG8Eg4o454bPPRYHx78fKWAGTWMNQxyxSCR8nfqWh5K8eaLojeWsHvFzSCzQBBiFECEigJCkt5xEblLbhYTwpXHfTdrk+KvVJ9AFoveFelXDkHise8VPipkzMnW/26s3k3I7neVK23zgF4BdtsAh8mWWI51VcKeYOKoV76BN4FK5JIHML1HtsotmT8TUTr2loDS33bIf2yox1gnxlZnIwec1obtPaJ8M/meOJlp5QRzNL59M/PKiyiuIeXXmRQXJfl9gmkMiHhQFH5QRUCXA9fmy+dDpgvJvHtdcIAw9VmHVbl+wU9PR56mQoaryBWKlIn3Jes03QaW7gqA5JQ293OBItnqvFLuj3tt9hdaF+KSLcwwTtZ3ATVUAowq26p1xaS13xDlJba8ZTlr1w== info@andock-ci.io"
+  - sudo ls -al /home/andock-ci
+  - sudo ls -al /home/andock-ci/.ssh
+  - acs version
 script:
-  # Check the role/playbook's syntax.
-  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
 
-  # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i tests/inventory tests/test.yml --connection=local
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags update
 
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags test
 
-  # Run the role/playbook again, checking to make sure it's idempotent.
-  # - >
-  #  ansible-playbook -i tests/inventory tests/test.yml --connection=local
-  #  | grep -q 'changed=0.*failed=0'
-  #  && (echo 'Idempotence test: pass' && exit 0)
-  #  || (echo 'Idempotence test: fail' && exit 1)
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags stop
 
-  # - if [ "$ANSIBLE_VERSION" = "latest" ]; then ansible-lint tests/test.yml || true; fi
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags rm
 
-cache:
-  - pip
+  # Create the instance and check it again
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags init
+
+  - sudo ls -al /home/andock-ci/andock-ci/envs
+  - sudo ls -al /home/andock-ci/andock-ci/envs/drupal-8-demo-fin
+  - sudo ls -al /home/andock-ci/andock-ci/envs/drupal-8-demo-fin/drupal-8-demo-fin--master
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags update
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags test
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags stop
+
+  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags rm
