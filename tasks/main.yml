@@ -33,7 +33,7 @@
     git:
       repo: "{{ git_repository_path }}"
       dest: "{{ instance_path }}"
-      version: "{{ branch }}-build"
+      version: "{{ branch }}{{target_branch_suffix}}"
       accept_hostkey: true
       force: yes
     tags: ['init','update','test']
