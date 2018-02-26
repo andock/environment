@@ -64,7 +64,7 @@
     when: environment_exists
 
   - name: "Include init tasks"
-    include: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
+    include_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
     when: environment_exists
 
@@ -79,12 +79,12 @@
       - environment_exists_before == false
 
   - name: "Include update tasks"
-    include: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
+    include_tasks: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
     tags: ['update']
     when: environment_exists
 
   - name: "Include test tasks"
-    include: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
+    include_tasks: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
     tags: ['test']
     when: environment_exists
 
