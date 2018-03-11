@@ -11,3 +11,4 @@ ssh-add ~/.ssh/id_rsa
 cp ssh-config ~/.ssh/config
 git config --global user.email "christian.wiedemann@key-tec.de"
 git config --global user.name "KEY-TEC (via TravisCI)"
+curl -fsSL get.docksal.io | sh
