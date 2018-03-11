@@ -31,13 +31,17 @@ before_install:
   - acs version
 script:
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags update
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags exec
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags test
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags exec -e "exec_command=sysinfo"
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags stop
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags update
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags rm
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags test
+
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags stop
+
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags rm
 
   # Create the instance and check it again
 
@@ -47,10 +51,10 @@ script:
   - sudo ls -al /home/andock-ci/andock-ci/envs/drupal-8-demo-fin
   - sudo ls -al /home/andock-ci/andock-ci/envs/drupal-8-demo-fin/drupal-8-demo-fin--master
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags update
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags update
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags test
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags test
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags stop
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags stop
 
-  - ansible-playbook -i tests/inventory tests/test_instance.yml --tags rm
+  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags rm

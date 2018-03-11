@@ -4,11 +4,11 @@
     stat:
       path: "{{ environment_path }}"
     register: existing_environment_path_before
-    tags: ['init','up','update','test','stop','rm']
+    tags: ['init','up','update','test','stop','rm','exec']
 
   - name: "Set fact environment_exists_before (Environment already exists..)"
     set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
-    tags: ['init','up','update','test','stop','rm']
+    tags: ['init','up','update','test','stop','rm','exec']
 
   - name: "Create environment folder"
     file:
@@ -20,11 +20,11 @@
     stat:
       path: "{{ environment_path }}"
     register: existing_environment_path
-    tags: ['init','up','update','test','stop','rm']
+    tags: ['init','up','update','test','stop','rm','exec']
 
   - name: "Set fact environment_exists (Environment exists or has created..)"
     set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
-    tags: ['init','up','update','test','stop','rm']
+    tags: ['init','up','update','test','stop','rm','exec']
 
   - name: "Prepare update."
     file: dest="{{ environment_path }}" mode=777  recurse=yes
@@ -53,6 +53,20 @@
       src: "templates/.docksal/docksal-local.yml"
       dest: "{{ environment_path }}/.docksal/docksal-local.yml"
     tags: ['init']
+    when: environment_exists
+
+  - name: "Fin ({{ exec_command }})"
+    shell: "fin {{ exec_command }}"
+    args:
+      warn: false
+      chdir: "{{ environment_path }}/{{ exec_path }}"
+    tags: ['exec']
+    when: environment_exists
+    register: exec_result
+
+  - debug:
+    var:  exec_result
+    tags: ['exec']
     when: environment_exists
 
   - name: "Start environment services (fin up)"
