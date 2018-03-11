@@ -1,0 +1,2 @@
+[andock-ci-fin-server]
+localhost ansible_connection=local ansible_ssh_user=andock-ci ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
