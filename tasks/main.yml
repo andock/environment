@@ -55,7 +55,7 @@
     tags: ['init']
     when: environment_exists
 
-  - name: "Fin ({{ exec_command }})"
+  - name: "Fin {{ exec_command }}"
     shell: "fin {{ exec_command }}"
     args:
       warn: false
@@ -64,8 +64,9 @@
     when: environment_exists
     register: exec_result
 
-  - debug:
-    var:  exec_result
+  - name: "Fin {{ exec_command }} output:"
+    debug:
+      var:  exec_result
     tags: ['exec']
     when: environment_exists
 
