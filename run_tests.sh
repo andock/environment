@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+
 inventory_file="tests/inventory-$1"
 
 git -C drupal-8-demo pull || git clone https://github.com/andock-ci/drupal-8-demo.git
