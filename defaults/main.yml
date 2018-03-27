@@ -21,3 +21,7 @@ docroot_path: "{{ environment_path }}/{{ docroot }}"
 site_path: "{{ docroot_path }}/sites/{{ site }}"
 
 docksal_env: []
+
+exec_command: "version"
+
+exec_path: ""
