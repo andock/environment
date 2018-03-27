@@ -12,4 +12,3 @@ cp ssh-config ~/.ssh/config
 git config --global user.email "christian.wiedemann@key-tec.de"
 git config --global user.name "KEY-TEC (via TravisCI)"
 sudo pip install ansible
-curl -fsSL get.docksal.io | sh
