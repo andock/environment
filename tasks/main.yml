@@ -64,8 +64,9 @@
     when: environment_exists
     register: exec_result
 
-  - debug:
-    var:  exec_result
+  - name: "Fin {{ exec_command }} output:"
+    debug:
+      var:  exec_result
     tags: ['exec']
     when: environment_exists
 
@@ -78,7 +79,7 @@
     when: environment_exists
 
   - name: "Run init tasks."
-    include_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
+    import_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
     when: environment_exists
 
@@ -93,12 +94,12 @@
       - environment_exists_before == false
 
   - name: "Run update tasks."
-    include_tasks: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
+    import_tasks: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
     tags: ['update']
     when: environment_exists
 
   - name: "Run test tasks."
-    include_tasks: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
+    import_tasks: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
     tags: ['test']
     when: environment_exists
 

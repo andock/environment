@@ -19,36 +19,10 @@ env:
 branches:
   only:
     - master
+    - develop
 
 before_install:
   - ./before_install.sh
-  - git clone git@github.com:andock-ci/drupal-8-demo-build.git
 script:
+  - ./run_tests.sh "localhost"
 
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags exec
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags exec -e "exec_command=sysinfo"
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags update
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags test
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags stop
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags rm
-
-  # Create the instance and check it again
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags init
-
-  - sudo ls -al ~/andock-ci/envs
-  - sudo ls -al ~/andock-ci/envs/drupal-8-demo-fin
-  - sudo ls -al ~/andock-ci/envs/drupal-8-demo-fin/drupal-8-demo-fin--master
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags update
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags test
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags stop
-
-  - ansible-playbook -i tests/inventory-localhost tests/test_instance.yml --tags rm
