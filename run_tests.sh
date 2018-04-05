@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+#curl -fsSL get.docksal.io | sh
+
+
+
 inventory_file="tests/inventory-$1"
 
 git -C drupal-8-demo pull || git clone https://github.com/andock-ci/drupal-8-demo.git

@@ -1,28 +1,28 @@
 ---
 - block:
-  - name: "Check whether the environment already exists.."
+  - name: "Check if the environment already exists."
     stat:
       path: "{{ environment_path }}"
     register: existing_environment_path_before
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Set fact environment_exists_before (Environment already exists..)"
+  - name: "Set fact \"environment_exists_before\""
     set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Create environment folder"
+  - name: "Create environment."
     file:
       state: directory
       path: "{{ environment_path }}"
     tags: ['init']
 
-  - name: "Check whether the environment exists or has created.."
+  - name: "Check if the environment exists or has been created."
     stat:
       path: "{{ environment_path }}"
     register: existing_environment_path
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Set fact environment_exists (Environment exists or has created..)"
+  - name: "Set fact \"environment_exists\""
     set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec']
 
@@ -31,7 +31,7 @@
     tags: ['update','test']
     when: environment_exists
 
-  - name: "Clone or pull repository"
+  - name: "Pull changes."
     git:
       repo: "{{ git_repository_path }}"
       dest: "{{ environment_path }}"
@@ -41,21 +41,21 @@
     tags: ['init','update','test']
     when: environment_exists
 
-  - name: "Create docksal-local.env file"
+  - name: "Create docksal-local.env."
     template:
       src: "templates/.docksal/docksal-local.env"
       dest: "{{ environment_path }}/.docksal/docksal-local.env"
     tags: ['init']
     when: environment_exists
 
-  - name: "Create docksal-local.yml file"
+  - name: "Create docksal-local.yml."
     template:
       src: "templates/.docksal/docksal-local.yml"
       dest: "{{ environment_path }}/.docksal/docksal-local.yml"
     tags: ['init']
     when: environment_exists
 
-  - name: "Fin {{ exec_command }}"
+  - name: "Run \"fin ({{ exec_command }})\""
     shell: "fin {{ exec_command }}"
     args:
       warn: false
@@ -70,7 +70,7 @@
     tags: ['exec']
     when: environment_exists
 
-  - name: "Start environment services (fin up)"
+  - name: "Start services (fin up)."
     command: fin up
     args:
       warn: false
@@ -78,12 +78,12 @@
     tags: ['init', 'up', 'update','test']
     when: environment_exists
 
-  - name: "Include init tasks"
-    include_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
+  - name: "Run init tasks."
+    import_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
     when: environment_exists
 
-  - name: "Add environment alias (fin alias {{ alias }})"
+  - name: "Add environment alias (fin alias {{ alias }})."
     command: "fin alias {{ environment_path }} {{ alias }}"
     args:
       warn: false
@@ -93,17 +93,17 @@
       - environment_exists
       - environment_exists_before == false
 
-  - name: "Include update tasks"
-    include_tasks: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
+  - name: "Run update tasks."
+    import_tasks: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
     tags: ['update']
     when: environment_exists
 
-  - name: "Include test tasks"
-    include_tasks: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
+  - name: "Run test tasks."
+    import_tasks: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
     tags: ['test']
     when: environment_exists
 
-  - name: "Stop Environmnet (fin stop)"
+  - name: "Stop environment (fin stop)."
     command: fin stop
     args:
       warn: false
@@ -112,7 +112,7 @@
     ignore_errors: yes
     when: environment_exists
 
-  - name: "Remove environmnet alias {{ alias }}"
+  - name: "Remove alias {{ alias }}."
     command: "fin alias remove {{ alias }}"
     args:
       warn: false
@@ -121,7 +121,7 @@
     ignore_errors: yes
     when: environment_exists
 
-  - name: "Remove environmnet services (fin rm)"
+  - name: "Remove services (fin rm)."
     command: "fin rm -f"
     args:
       warn: false
@@ -130,13 +130,13 @@
     ignore_errors: yes
     when: environment_exists
 
-  - name: "Clear Prepare."
+  - name: "Prepare for cleanup."
     file: dest="{{ environment_path }}" mode=777  recurse=yes
     tags: ['rm']
     ignore_errors: yes
     when: environment_exists
 
-  - name: "Remove environment folder"
+  - name: "Remove environment."
     file:
       state: absent
       path: "{{ environment_path }}"
