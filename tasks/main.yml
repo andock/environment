@@ -6,7 +6,7 @@
     register: existing_environment_path_before
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Set fact \"environment_exists_before\""
+  - name: "Set fact \"environment_exists_before\"."
     set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec']
 
@@ -22,7 +22,7 @@
     register: existing_environment_path
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Set fact \"environment_exists\""
+  - name: "Set fact \"environment_exists\"."
     set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec']
 
@@ -45,14 +45,14 @@
     template:
       src: "templates/.docksal/docksal-local.env"
       dest: "{{ environment_path }}/.docksal/docksal-local.env"
-    tags: ['init']
+    tags: ['init','up']
     when: environment_exists
 
   - name: "Create docksal-local.yml."
     template:
       src: "templates/.docksal/docksal-local.yml"
       dest: "{{ environment_path }}/.docksal/docksal-local.yml"
-    tags: ['init']
+    tags: ['init','up']
     when: environment_exists
 
   - name: "Run \"fin ({{ exec_command }})\""
@@ -75,7 +75,7 @@
     args:
       warn: false
       chdir: "{{ environment_path }}"
-    tags: ['init', 'up', 'update','test']
+    tags: ['init', 'up']
     when: environment_exists
 
   - name: "Run init tasks."
