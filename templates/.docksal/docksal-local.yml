@@ -5,6 +5,14 @@ services:
   cli:
     environment:
       - ANDOCK_CI=1
+    volumes:
+    {% for mount in mounts %}
+  - '{{ mount_path }}/{{ mount.src }}:/var/www/{{ mount.path }}:rw'
+    {% endfor %}
   web:
     environment:
       - ANDOCK_CI=1
+    volumes:
+    {% for mount in mounts %}
+  - '{{ mount_path }}/{{ mount.src }}:/var/www/{{ mount.path }}:rw'
+    {% endfor %}

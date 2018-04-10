@@ -3,9 +3,3 @@
   args:
     chdir: "{{ docroot_path }}"
   when: environment_exists_before == false
-
-- name: drush site install
-  command: fin exec -T "drush site-install minimal -y"
-  args:
-    chdir: "{{ docroot_path }}"
-  when: (environment_exists_before == false)

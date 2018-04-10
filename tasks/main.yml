@@ -16,6 +16,13 @@
       path: "{{ environment_path }}"
     tags: ['init']
 
+  - name: "Create mount sources."
+    file:
+      state: directory
+      path: "{{ mount_path }}/{{ item.src }}"
+    with_items: "{{ mounts }}"
+    tags: ['init', 'update']
+
   - name: "Check if the environment exists or has been created."
     stat:
       path: "{{ environment_path }}"

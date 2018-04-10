@@ -9,5 +9,7 @@
       branch: "master"
       domain: "drupal-8-demo.docksal drupal-8-demo2.docksal"
       hook_init_tasks: "hooks/init_tasks.yml"
+      mounts:
+        - { src: 'files', path: 'docroot/sites/default/files' }
       docksal_env:
         XDEBUG_ENABLED: "0"
