@@ -55,6 +55,7 @@
       state: link
     with_items: "{{ mounts }}"
     tags: ['init', 'up', 'update']
+    when: environment_exists
 
   - name: "Create docksal-local.env."
     template:
