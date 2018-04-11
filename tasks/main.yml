@@ -16,7 +16,7 @@
       path: "{{ environment_path }}"
     tags: ['init']
 
-  - name: "Create mount sources."
+  - name: "Create shared folders."
     file:
       state: directory
       path: "{{ mount_path }}/{{ item.src }}"
@@ -33,9 +33,9 @@
     set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Prepare update."
-    file: dest="{{ environment_path }}" mode=777  recurse=yes
-    tags: ['update','test']
+  - name: "Prepare filesystem."
+    file: dest="{{ environment_path }}" mode={{ file_mode_update }} recurse=yes follow=no
+    tags: ['update', 'test', 'rm']
     when: environment_exists
 
   - name: "Pull changes."
@@ -45,21 +45,29 @@
       version: "{{ branch }}{{target_branch_suffix}}"
       accept_hostkey: true
       force: yes
-    tags: ['init','update','test']
+    tags: ['init','update', 'test']
     when: environment_exists
+
+  - name: "Create symlinks."
+    file:
+      src: "{{ mount_path }}/{{ item.src }}"
+      dest: "{{ environment_path}}/{{ item.path }}"
+      state: link
+    with_items: "{{ mounts }}"
+    tags: ['init', 'up', 'update']
 
   - name: "Create docksal-local.env."
     template:
-      src: "templates/.docksal/docksal-local.env"
+      src: "{{ docksal_local_env_path }}"
       dest: "{{ environment_path }}/.docksal/docksal-local.env"
-    tags: ['init','up']
+    tags: ['init', 'up', 'rm']
     when: environment_exists
 
   - name: "Create docksal-local.yml."
     template:
-      src: "templates/.docksal/docksal-local.yml"
+      src: "{{ docksal_local_yml_path }}"
       dest: "{{ environment_path }}/.docksal/docksal-local.yml"
-    tags: ['init','up']
+    tags: ['init', 'up', 'rm']
     when: environment_exists
 
   - name: "Run \"fin ({{ exec_command }})\""
@@ -105,6 +113,11 @@
     tags: ['update']
     when: environment_exists
 
+  - name: "Make non shared filesystem read only."
+    file: dest="{{ environment_path }}" mode={{ file_mode_read_only }} recurse=yes follow=no
+    tags: ['init', 'update', 'test']
+    when: environment_exists
+
   - name: "Run test tasks."
     import_tasks: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
     tags: ['test']
@@ -134,14 +147,14 @@
       warn: false
       chdir: "{{ environment_path }}"
     tags: ['rm']
-    ignore_errors: yes
     when: environment_exists
 
-  - name: "Prepare for cleanup."
-    file: dest="{{ environment_path }}" mode=777  recurse=yes
+  - name: "Remove shared folders."
+    file:
+      state: absent
+      path: "{{ mount_path }}/{{ item.src }}"
+    with_items: "{{ mounts }}"
     tags: ['rm']
-    ignore_errors: yes
-    when: environment_exists
 
   - name: "Remove environment."
     file:

@@ -1,7 +1,7 @@
 ---
 
 # Default andock-ci home
-andock_ci_home: ~/andock-ci
+andock_ci_home: "{{ lookup('env','HOME') }}/andock-ci"
 # Default checkout branch.
 branch: "master"
 
@@ -35,3 +35,12 @@ exec_command: "version"
 # Default fin exec path.
 exec_path: ""
 
+# Path to ansible template for docksal-local.env
+docksal_local_env_path: templates/.docksal/docksal-local.env
+
+# Path to ansible template for docksal-local.yml
+docksal_local_yml_path: templates/.docksal/docksal-local.yml
+
+file_mode_update: u=rwX,g=rwX
+
+file_mode_read_only: u=rX,g=rX

@@ -7,12 +7,24 @@ services:
       - ANDOCK_CI=1
     volumes:
     {% for mount in mounts %}
-  - '{{ mount_path }}/{{ mount.src }}:/var/www/{{ mount.path }}:rw'
+  - {{ mount.name }}:/var/www/{{ mount.path }}:rw
     {% endfor %}
+
   web:
     environment:
       - ANDOCK_CI=1
     volumes:
     {% for mount in mounts %}
-  - '{{ mount_path }}/{{ mount.src }}:/var/www/{{ mount.path }}:rw'
+  - {{ mount.name }}:/var/www/{{ mount.path }}:rw
     {% endfor %}
+
+
+volumes:
+{% for mount in mounts %}
+  {{ mount.name }}:  # Project root volume (bind)
+    driver: local
+    driver_opts:
+      type: none
+      device: {{ mount_path }}/{{ mount.name }}
+      o: bind
+{% endfor %}
