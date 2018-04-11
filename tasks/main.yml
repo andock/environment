@@ -155,6 +155,7 @@
       path: "{{ mount_path }}/{{ item.src }}"
     with_items: "{{ mounts }}"
     tags: ['rm']
+    when: environment_exists
 
   - name: "Remove environment."
     file:
