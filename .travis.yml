@@ -16,11 +16,6 @@ env:
   - ENCRYPTION_LABEL: "6f215de00b79"
   - COMMIT_AUTHOR_EMAIL: "christian.wiedemann@key-tec.de"
 
-branches:
-  only:
-    - master
-    - develop
-
 before_install:
   - ./before_install.sh
 script:
