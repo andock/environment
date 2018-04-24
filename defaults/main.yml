@@ -1,7 +1,7 @@
 ---
 
 # Default andock-ci home
-andock_ci_home: "{{ lookup('env','HOME') }}/andock-ci"
+andock_ci_home: "{{ ansible_env.HOME }}/andock-ci"
 # Default checkout branch.
 branch: "master"
 
