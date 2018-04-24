@@ -5,6 +5,32 @@ services:
   cli:
     environment:
       - ANDOCK_CI=1
+
+{% if shares %}
+    volumes:
+    {% for share in shares %}
+  - {{ share.name }}:/var/www/{{ share.path }}:rw
+    {% endfor %}
+{% endif %}
+
   web:
     environment:
       - ANDOCK_CI=1
+{% if shares %}
+    volumes:
+    {% for share in shares %}
+  - {{ share.name }}:/var/www/{{ share.path }}:rw
+    {% endfor %}
+{% endif %}
+
+{% if shares %}
+volumes:
+{% for share in shares %}
+  {{ share.name }}:  # Project root volume (bind)
+    driver: local
+    driver_opts:
+      type: none
+      device: {{ share_path }}/{{ share.name }}
+      o: bind
+{% endfor %}
+{% endif %}
