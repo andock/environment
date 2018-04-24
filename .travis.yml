@@ -17,5 +17,6 @@ env:
 before_install:
   - ./before_install.sh
 script:
-  - ./run_tests.sh "localhost"
+  - ./run_tests.sh "localhost" "default"
+  - ./run_tests.sh "localhost" "share"
 
