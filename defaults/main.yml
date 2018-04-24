@@ -13,12 +13,12 @@ envs_path: "{{ andock_ci_home }}/envs"
 # Environment folder.
 environment_path: "{{ envs_path }}/{{ project_name }}/{{ project_name }}--{{ branch }}"
 
-# Mount root folder.
-mounts_path: "{{ andock_ci_home }}/mounts"
+# Shares root folder.
+shares_path: "{{ andock_ci_home }}/mounts"
 # Mount environnmet folder.
-mount_path: "{{ mounts_path }}/{{ project_name }}/{{ project_name }}--{{ branch }}"
+share_path: "{{ shares_path }}/{{ project_name }}/{{ project_name }}--{{ branch }}"
 
-mounts:
+shares: []
 
 # Generate fin alias
 alias: "{{ project_name }}.{{ branch }}"
@@ -41,6 +41,6 @@ docksal_local_env_path: templates/.docksal/docksal-local.env
 # Path to ansible template for docksal-local.yml
 docksal_local_yml_path: templates/.docksal/docksal-local.yml
 
-file_mode_update: u=rwX,g=rwX
+file_mode_prepare: u=rwX,g=rwX
 
-file_mode_read_only: u=rX,g=rX
+file_mode_deployed: u=rwX,g=rwX

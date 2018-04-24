@@ -19,8 +19,8 @@
   - name: "Create shared folders."
     file:
       state: directory
-      path: "{{ mount_path }}/{{ item.src }}"
-    with_items: "{{ mounts }}"
+      path: "{{ share_path }}/{{ item.src }}"
+    with_items: "{{ shares }}"
     tags: ['init', 'update']
 
   - name: "Check if the environment exists or has been created."
@@ -34,7 +34,7 @@
     tags: ['init','up','update','test','stop','rm','exec']
 
   - name: "Prepare filesystem."
-    file: dest="{{ environment_path }}" mode={{ file_mode_update }} recurse=yes follow=no
+    file: dest="{{ environment_path }}" mode={{ file_mode_prepare }} recurse=yes follow=no
     tags: ['update', 'test', 'rm']
     when: environment_exists
 
@@ -50,10 +50,10 @@
 
   - name: "Create symlinks."
     file:
-      src: "{{ mount_path }}/{{ item.src }}"
+      src: "{{ share_path }}/{{ item.src }}"
       dest: "{{ environment_path}}/{{ item.path }}"
       state: link
-    with_items: "{{ mounts }}"
+    with_items: "{{ shares }}"
     tags: ['init', 'up', 'update']
     when: environment_exists
 
@@ -114,8 +114,8 @@
     tags: ['update']
     when: environment_exists
 
-  - name: "Make non shared filesystem read only."
-    file: dest="{{ environment_path }}" mode={{ file_mode_read_only }} recurse=yes follow=no
+  - name: "Set non shared filesystem to {{ file_mode_deployed }}."
+    file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
     tags: ['init', 'update', 'test']
     when: environment_exists
 
@@ -153,8 +153,8 @@
   - name: "Remove shared folders."
     file:
       state: absent
-      path: "{{ mount_path }}/{{ item.src }}"
-    with_items: "{{ mounts }}"
+      path: "{{ share_path }}/{{ item.src }}"
+    with_items: "{{ shares }}"
     tags: ['rm']
     when: environment_exists
 
