@@ -1,7 +1,7 @@
 ---
 - name: Init andock-ci instance
   hosts: andock-ci-fin-server
-  gather_facts: false
+  gather_facts: true
   roles:
     - role: fin
       git_repository_path: https://github.com/andock-ci/drupal-8-demo-build.git
