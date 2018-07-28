@@ -1,0 +1,166 @@
+---
+- block:
+  - name: "Check if the environment already exists."
+    stat:
+      path: "{{ environment_path }}"
+    register: existing_environment_path_before
+    tags: ['init','up','update','test','stop','rm','exec']
+
+  - name: "Set fact \"environment_exists_before\"."
+    set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
+    tags: ['init','up','update','test','stop','rm','exec']
+
+  - name: "Create environment."
+    file:
+      state: directory
+      path: "{{ environment_path }}"
+    tags: ['init']
+
+  - name: "Create shared folders."
+    file:
+      state: directory
+      path: "{{ share_path }}/{{ item.src }}"
+    with_items: "{{ shares }}"
+    tags: ['init', 'update']
+
+  - name: "Check if the environment exists or has been created."
+    stat:
+      path: "{{ environment_path }}"
+    register: existing_environment_path
+    tags: ['init','up','update','test','stop','rm','exec']
+
+  - name: "Set fact \"environment_exists\"."
+    set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
+    tags: ['init','up','update','test','stop','rm','exec']
+
+  - name: "Prepare filesystem."
+    file: dest="{{ environment_path }}" mode={{ file_mode_prepare }} recurse=yes follow=no
+    tags: ['update', 'test', 'rm']
+    when: environment_exists
+
+  - name: "Pull changes."
+    git:
+      repo: "{{ git_repository_path }}"
+      dest: "{{ environment_path }}"
+      version: "{{ branch }}{{target_branch_suffix}}"
+      accept_hostkey: true
+      force: yes
+    tags: ['init','update', 'test']
+    when: environment_exists
+
+  - name: "Create symlinks."
+    file:
+      src: "{{ share_path }}/{{ item.src }}"
+      dest: "{{ environment_path}}/{{ item.path }}"
+      state: link
+    with_items: "{{ shares }}"
+    tags: ['init', 'up', 'update']
+    when: environment_exists
+
+  - name: "Create docksal-local.env."
+    template:
+      src: "{{ docksal_local_env_path }}"
+      dest: "{{ environment_path }}/.docksal/docksal-local.env"
+    tags: ['init', 'up', 'rm']
+    when: environment_exists
+
+  - name: "Create docksal-local.yml."
+    template:
+      src: "{{ docksal_local_yml_path }}"
+      dest: "{{ environment_path }}/.docksal/docksal-local.yml"
+    tags: ['init', 'up', 'rm']
+    when: environment_exists
+
+  - name: "Run \"fin ({{ exec_command }})\""
+    shell: "fin {{ exec_command }}"
+    args:
+      warn: false
+      chdir: "{{ environment_path }}/{{ exec_path }}"
+    tags: ['exec']
+    when: environment_exists
+    register: exec_result
+
+  - name: "Fin {{ exec_command }} output:"
+    debug:
+      var:  exec_result
+    tags: ['exec']
+    when: environment_exists
+
+  - name: "Start services (fin up)."
+    command: fin up
+    args:
+      warn: false
+      chdir: "{{ environment_path }}"
+    tags: ['init', 'up']
+    when: environment_exists
+
+  - name: "Run init tasks."
+    import_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
+    tags: ['init']
+    when: environment_exists
+
+  - name: "Add environment alias (fin alias {{ alias }})."
+    command: "fin alias {{ environment_path }} {{ alias }}"
+    args:
+      warn: false
+      chdir: "{{ environment_path }}"
+    tags: ['init']
+    when:
+      - environment_exists
+      - environment_exists_before == false
+
+  - name: "Run update tasks."
+    import_tasks: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
+    tags: ['update']
+    when: environment_exists
+
+  - name: "Set non shared filesystem to {{ file_mode_deployed }}."
+    file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
+    tags: ['init', 'update', 'test']
+    when: environment_exists
+
+  - name: "Run test tasks."
+    import_tasks: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
+    tags: ['test']
+    when: environment_exists
+
+  - name: "Stop environment (fin stop)."
+    command: fin stop
+    args:
+      warn: false
+      chdir: "{{ environment_path }}"
+    tags: ['stop', 'rm']
+    ignore_errors: yes
+    when: environment_exists
+
+  - name: "Remove alias {{ alias }}."
+    command: "fin alias remove {{ alias }}"
+    args:
+      warn: false
+      chdir: "{{ environment_path }}"
+    tags: ['rm']
+    ignore_errors: yes
+    when: environment_exists
+
+  - name: "Remove services (fin rm)."
+    command: "fin rm -f"
+    args:
+      warn: false
+      chdir: "{{ environment_path }}"
+    tags: ['rm']
+    when: environment_exists
+
+  - name: "Remove shared folders."
+    file:
+      state: absent
+      path: "{{ share_path }}/{{ item.src }}"
+    with_items: "{{ shares }}"
+    tags: ['rm']
+    when: environment_exists
+
+  - name: "Remove environment."
+    file:
+      state: absent
+      path: "{{ environment_path }}"
+    tags: ['rm']
+    when: environment_exists

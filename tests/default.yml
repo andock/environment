@@ -1,0 +1,13 @@
+---
+- name: Init andock-ci instance
+  hosts: andock-ci-fin-server
+  gather_facts: true
+  roles:
+    - role: fin
+      git_repository_path: https://github.com/andock-ci/drupal-8-demo-build.git
+      project_name: drupal-8-demo-fin
+      branch: "master"
+      domain: "drupal-8-demo.docksal drupal-8-demo2.docksal"
+      hook_init_tasks: "hooks/init_tasks.yml"
+      docksal_env:
+        XDEBUG_ENABLED: "0"

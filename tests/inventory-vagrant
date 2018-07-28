@@ -1,0 +1,2 @@
+[andock-ci-fin-server]
+192.168.33.10 ansible_connection=ssh ansible_ssh_user=andock-ci ansible_ssh_pass=andock-ci ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
