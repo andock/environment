@@ -3,7 +3,7 @@
 # Default andock home
 andock_home: "{{ ansible_env.HOME }}/andock"
 
-project_path: "{{ andock_home }}/projects/{{ project_name }}"
+project_home: "{{ andock_home }}/projects/{{ project_name }}"
 
 # Default checkout branch.
 branch: "master"
@@ -12,12 +12,12 @@ branch: "master"
 docroot: "docroot"
 
 # Environment root folder.
-envs_path: "{{ project_path }}/envs"
+envs_path: "{{ project_home }}/envs"
 # Environment folder.
 environment_path: "{{ envs_path }}/{{ project_name }}--{{ branch }}"
 
 # Shares root folder.
-mounts_path: "{{ project_path }}/mounts"
+mounts_path: "{{ project_home }}/mounts"
 # Mount environnmet folder.
 mount_path: "{{ mounts_path }}/{{ project_name }}--{{ branch }}"
 
@@ -50,4 +50,4 @@ file_mode_deployed: u=rX,g=rX,o=rX
 
 target_branch_suffix: ""
 
-git_artifact_repository_path:  "{{ project_path }}/repository/{{ project_name }}.git"
+git_artifact_repository_path:  "{{ project_home }}/repository/{{ project_name }}.git"
