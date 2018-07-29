@@ -35,7 +35,7 @@
 
   - name: "Prepare filesystem"
     file: dest="{{ environment_path }}" mode={{ file_mode_prepare }} recurse=yes follow=no
-    tags: ['update', 'rm']
+    tags: ['init', 'update', 'rm']
     when: environment_exists
 
   - name: "Pull changes"
