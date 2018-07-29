@@ -6,31 +6,31 @@ services:
     environment:
       - ANDOCK_CI=1
 
-{% if shares %}
+{% if mounts %}
     volumes:
-    {% for share in shares %}
-  - {{ share.name }}:/var/www/{{ share.path }}:rw
+    {% for mount in mounts %}
+  - {{ mount.name }}:/var/www/{{ mount.path }}:rw
     {% endfor %}
 {% endif %}
 
   web:
     environment:
       - ANDOCK_CI=1
-{% if shares %}
+{% if mounts %}
     volumes:
-    {% for share in shares %}
-  - {{ share.name }}:/var/www/{{ share.path }}:rw
+    {% for mount in mounts %}
+  - {{ mount.name }}:/var/www/{{ mount.path }}:rw
     {% endfor %}
 {% endif %}
 
-{% if shares %}
+{% if mounts %}
 volumes:
-{% for share in shares %}
-  {{ share.name }}:  # Project root volume (bind)
+{% for mount in mounts %}
+  {{ mount.name }}:  # Project root volume (bind)
     driver: local
     driver_opts:
       type: none
-      device: {{ share_path }}/{{ share.name }}
+      device: {{ mount_path }}/{{ mount.name }}
       o: bind
 {% endfor %}
 {% endif %}

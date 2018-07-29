@@ -1,4 +1,2 @@
 ---
-# vars file for andock-ci-build
-
-target_branch_suffix: "-build"
+# vars file for andock-build

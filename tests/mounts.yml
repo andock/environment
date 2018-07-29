@@ -9,5 +9,7 @@
       branch: "master"
       base_domains: "demo-project.docksal demo-project2.docksal"
       hook_init_tasks: "hooks/init_tasks.yml"
+      mounts:
+        - { name: 'files', src: 'files', path: 'docroot/files' }
       docksal_env:
         XDEBUG_ENABLED: "0"

@@ -1,74 +1,79 @@
 ---
 - block:
-  - name: "Check if the environment already exists."
+  - name: "Check if the environment already exists"
     stat:
       path: "{{ environment_path }}"
     register: existing_environment_path_before
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Set fact \"environment_exists_before\"."
+  - name: "Set fact \"environment_exists_before\""
     set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Create environment."
+  - name: "Create environment"
     file:
       state: directory
       path: "{{ environment_path }}"
     tags: ['init']
 
-  - name: "Create shared folders."
+  - name: "Create mounts"
     file:
       state: directory
-      path: "{{ share_path }}/{{ item.src }}"
-    with_items: "{{ shares }}"
+      path: "{{ mount_path }}/{{ item.src }}"
+    with_items: "{{ mounts }}"
     tags: ['init', 'update']
 
-  - name: "Check if the environment exists or has been created."
+  - name: "Check if the environment exists or has been created"
     stat:
       path: "{{ environment_path }}"
     register: existing_environment_path
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Set fact \"environment_exists\"."
+  - name: "Set fact \"environment_exists\""
     set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec']
 
-  - name: "Prepare filesystem."
+  - name: "Prepare filesystem"
     file: dest="{{ environment_path }}" mode={{ file_mode_prepare }} recurse=yes follow=no
-    tags: ['update', 'test', 'rm']
+    tags: ['update', 'rm']
     when: environment_exists
 
-  - name: "Pull changes."
+  - name: "Pull changes"
     git:
-      repo: "{{ git_repository_path }}"
+      repo: "{{ git_artifact_repository_path }}"
       dest: "{{ environment_path }}"
       version: "{{ branch }}{{target_branch_suffix}}"
       accept_hostkey: true
       force: yes
-    tags: ['init','update', 'test']
+    tags: ['init','update']
     when: environment_exists
 
-  - name: "Create symlinks."
+  - name: "Create mount symlinks"
     file:
-      src: "{{ share_path }}/{{ item.src }}"
+      src: "{{ mount_path }}/{{ item.src }}"
       dest: "{{ environment_path}}/{{ item.path }}"
       state: link
-    with_items: "{{ shares }}"
+    with_items: "{{ mounts }}"
     tags: ['init', 'up', 'update']
     when: environment_exists
 
-  - name: "Create docksal-local.env."
+  - name: "Create docksal-local.env"
     template:
       src: "{{ docksal_local_env_path }}"
       dest: "{{ environment_path }}/.docksal/docksal-local.env"
     tags: ['init', 'up', 'rm']
     when: environment_exists
 
-  - name: "Create docksal-local.yml."
+  - name: "Create docksal-local.yml"
     template:
       src: "{{ docksal_local_yml_path }}"
       dest: "{{ environment_path }}/.docksal/docksal-local.yml"
     tags: ['init', 'up', 'rm']
+    when: environment_exists
+
+  - name: "Set non mounted filesystem to {{ file_mode_deployed }}"
+    file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
+    tags: ['init', 'update']
     when: environment_exists
 
   - name: "Run \"fin ({{ exec_command }})\""
@@ -86,7 +91,7 @@
     tags: ['exec']
     when: environment_exists
 
-  - name: "Start services (fin up)."
+  - name: "Start services (fin up)"
     command: fin up
     args:
       warn: false
@@ -94,12 +99,12 @@
     tags: ['init', 'up']
     when: environment_exists
 
-  - name: "Run init tasks."
+  - name: "Run init tasks"
     import_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
     when: environment_exists
 
-  - name: "Add environment alias (fin alias {{ alias }})."
+  - name: "Add environment alias (fin alias {{ alias }})"
     command: "fin alias {{ environment_path }} {{ alias }}"
     args:
       warn: false
@@ -109,14 +114,9 @@
       - environment_exists
       - environment_exists_before == false
 
-  - name: "Run update tasks."
+  - name: "Run update tasks"
     import_tasks: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
     tags: ['update']
-    when: environment_exists
-
-  - name: "Set non shared filesystem to {{ file_mode_deployed }}."
-    file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
-    tags: ['init', 'update', 'test']
     when: environment_exists
 
   - name: "Run test tasks."
@@ -124,7 +124,7 @@
     tags: ['test']
     when: environment_exists
 
-  - name: "Stop environment (fin stop)."
+  - name: "Stop environment (fin stop)"
     command: fin stop
     args:
       warn: false
@@ -133,7 +133,7 @@
     ignore_errors: yes
     when: environment_exists
 
-  - name: "Remove alias {{ alias }}."
+  - name: "Remove alias {{ alias }}"
     command: "fin alias remove {{ alias }}"
     args:
       warn: false
@@ -142,7 +142,7 @@
     ignore_errors: yes
     when: environment_exists
 
-  - name: "Remove services (fin rm)."
+  - name: "Remove services (fin rm)"
     command: "fin rm -f"
     args:
       warn: false
@@ -150,15 +150,15 @@
     tags: ['rm']
     when: environment_exists
 
-  - name: "Remove shared folders."
+  - name: "Remove mounted folders"
     file:
       state: absent
-      path: "{{ share_path }}/{{ item.src }}"
-    with_items: "{{ shares }}"
+      path: "{{ mount_path }}/{{ item.src }}"
+    with_items: "{{ mounts }}"
     tags: ['rm']
     when: environment_exists
 
-  - name: "Remove environment."
+  - name: "Remove environment"
     file:
       state: absent
       path: "{{ environment_path }}"

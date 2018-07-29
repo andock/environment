@@ -1,7 +1,10 @@
 ---
 
-# Default andock-ci home
-andock_ci_home: "{{ ansible_env.HOME }}/andock-ci"
+# Default andock home
+andock_home: "{{ ansible_env.HOME }}/andock"
+
+project_path: "{{ andock_home }}/projects/{{ project_name }}"
+
 # Default checkout branch.
 branch: "master"
 
@@ -9,16 +12,16 @@ branch: "master"
 docroot: "docroot"
 
 # Environment root folder.
-envs_path: "{{ andock_ci_home }}/envs"
+envs_path: "{{ project_path }}/envs"
 # Environment folder.
-environment_path: "{{ envs_path }}/{{ project_name }}/{{ project_name }}--{{ branch }}"
+environment_path: "{{ envs_path }}/{{ project_name }}--{{ branch }}"
 
 # Shares root folder.
-shares_path: "{{ andock_ci_home }}/mounts"
+mounts_path: "{{ project_path }}/mounts"
 # Mount environnmet folder.
-share_path: "{{ shares_path }}/{{ project_name }}/{{ project_name }}--{{ branch }}"
+mount_path: "{{ mounts_path }}/{{ project_name }}--{{ branch }}"
 
-shares: []
+mounts: []
 
 # Generate fin alias
 alias: "{{ project_name }}.{{ branch }}"
@@ -43,4 +46,8 @@ docksal_local_yml_path: templates/.docksal/docksal-local.yml
 
 file_mode_prepare: u=rwX,g=rwX
 
-file_mode_deployed: u=rwX,g=rwX
+file_mode_deployed: u=rX,g=rX,o=rX
+
+target_branch_suffix: ""
+
+git_artifact_repository_path:  "{{ project_path }}/repository/{{ project_name }}.git"

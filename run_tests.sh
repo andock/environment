@@ -8,7 +8,7 @@ set -e
 inventory_file="tests/inventory-$1"
 config_file="tests/$2.yml"
 
-git -C drupal-8-demo pull || git clone https://github.com/andock-ci/drupal-8-demo.git
+git -C demo-project pull || git clone https://github.com/andock/demo-project.git
 
 ansible-playbook -i $inventory_file $config_file --tags exec
 
@@ -26,10 +26,15 @@ ansible-playbook -i $inventory_file $config_file --tags rm
 
 ansible-playbook -i $inventory_file $config_file --tags init
 
-sudo ls -al ~/andock-ci/envs
-sudo ls -al ~/andock-ci/envs/drupal-8-demo-fin
-sudo ls -al ~/andock-ci/envs/drupal-8-demo-fin/drupal-8-demo-fin--master
+ls -al ~/andock/projects/demo-project
+ls -al ~/andock/projects/demo-project/envs
+ls -al ~/andock/projects/demo-project/envs/demo-project--master
 
+if [ "$2" = "share" ]
+
+    then cd ~/andock/projects/demo-project/envs/demo-project--master/docroot/files; touch test.txt
+    exit
+fi
 ansible-playbook -i $inventory_file $config_file --tags update
 
 ansible-playbook -i $inventory_file $config_file --tags test
