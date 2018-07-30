@@ -30,7 +30,7 @@ ls -al ~/andock/projects/demo-project
 ls -al ~/andock/projects/demo-project/envs
 ls -al ~/andock/projects/demo-project/envs/demo-project--master
 
-if [ "$2" = "share" ]
+if [ "$2" = "mounts" ]
 
     then cd ~/andock/projects/demo-project/envs/demo-project--master/docroot/files; touch test.txt
     exit

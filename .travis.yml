@@ -24,3 +24,5 @@ script:
   - ./run_tests.sh "localhost" "default"
   - ./run_tests.sh "localhost" "mounts"
 
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
