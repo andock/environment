@@ -5,9 +5,9 @@ services:
   cli:
     environment:
       - ANDOCK_CI=1
-
-{% if mounts %}
     volumes:
+      - project_root:/var/www:ro,nocopy
+{% if mounts %}
     {% for mount in mounts %}
   - {{ mount.name }}:/var/www/{{ mount.path }}:rw
     {% endfor %}
