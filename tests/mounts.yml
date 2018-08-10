@@ -7,7 +7,9 @@
       git_artifact_repository_path: https://github.com/andock/demo-project.git
       project_name: demo-project
       branch: "master"
-      base_domains: "demo-project.docksal demo-project2.docksal"
+      virtual_hosts:
+        default: "{{ branch }}.demo-project-fin.docksal"
+        sub: "{{ branch }}.demo2-project-fin.docksal"
       hook_init_tasks: "hooks/init_tasks.yml"
       mounts:
         - { name: 'files', src: 'files', path: 'docroot/files' }
