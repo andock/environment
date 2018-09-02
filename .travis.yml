@@ -18,8 +18,8 @@ before_install:
   - sudo curl -fsSL get.docksal.io | sh
 install:
   # Install Ansible.
-  - pip install ansible==2.4
-  - pip install ansible-lint
+  - sudo pip install ansible==2.4
+  - sudo pip install ansible-lint
 script:
 
   - ./run_tests.sh "localhost" "default"
