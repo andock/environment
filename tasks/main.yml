@@ -111,7 +111,7 @@
   - name: "Run init tasks"
     import_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
-    when: environment_exists && environment_exists_before == false
+    when: environment_exists and environment_exists_before == false
 
   - name: "Add environment alias (fin alias {{ alias }})"
     command: "fin alias {{ environment_path }} {{ alias }}"
