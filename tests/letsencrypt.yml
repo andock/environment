@@ -1,0 +1,16 @@
+---
+- name: Init andock instance
+  hosts: andock-fin-server
+  gather_facts: true
+  roles:
+    - role: fin
+      git_artifact_repository_path: https://github.com/andock/demo-project.git
+      project_name: demo-project
+      branch: "master"
+      virtual_hosts:
+        default: "dev.andock.ci"
+      hook_init_tasks: "hooks/init_tasks.yml"
+      mounts:
+        - { name: 'files', src: 'files', path: 'docroot/files' }
+      docksal_env:
+        XDEBUG_ENABLED: "0"

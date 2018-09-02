@@ -71,11 +71,6 @@
     tags: ['init', 'up', 'rm']
     when: environment_exists
 
-  - name: "Set non mounted filesystem to {{ file_mode_deployed }}"
-    file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
-    tags: ['init', 'update']
-    when: environment_exists
-
   - name: "Run \"fin ({{ exec_command }})\""
     shell: "fin {{ exec_command }}"
     args:
@@ -99,10 +94,24 @@
     tags: ['init', 'up']
     when: environment_exists
 
+  - block:
+    - name: Lets encrypt!
+      with_dict: "{{ virtual_hosts }}"
+      include_tasks: "letsencrypt.yml"
+      vars:
+        letsencrypt_domain: "{{ item.value }}"
+    tags: ['init', 'update', 'rm']
+    when: letsencrypt_enable
+
+  - name: "Set non mounted filesystem to {{ file_mode_deployed }}"
+    file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
+    tags: ['init', 'update']
+    when: environment_exists
+
   - name: "Run init tasks"
     import_tasks: "{{ hook_init_tasks | default(role_path  ~ '/hooks/hook_init_tasks.yml') }}"
     tags: ['init']
-    when: environment_exists
+    when: environment_exists && environment_exists_before == false
 
   - name: "Add environment alias (fin alias {{ alias }})"
     command: "fin alias {{ environment_path }} {{ alias }}"

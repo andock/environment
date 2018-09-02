@@ -1,6 +1,7 @@
 ---
 
 # Default andock home
+
 andock_home: "{{ ansible_env.HOME }}/andock"
 
 project_home: "{{ andock_home }}/projects/{{ project_name }}"
@@ -44,10 +45,43 @@ docksal_local_env_path: templates/.docksal/docksal-local.env
 # Path to ansible template for docksal-local.yml
 docksal_local_yml_path: templates/.docksal/docksal-local.yml
 
+# File mode while deployment
 file_mode_prepare: u=rwX,g=rwX
 
+# File mode after deployment
 file_mode_deployed: u=rX,g=rX,o=rX
 
 target_branch_suffix: ""
 
+# The path to the source repository.
 git_artifact_repository_path:  "{{ project_home }}/repository/{{ project_name }}.git"
+
+## Let's encrypt variables
+
+letsencrypt_enable: false
+
+letsencrypt_home: "~/.docksal/certs"
+
+letsencrypt_account_key_path: '{{ letsencrypt_home }}/letsencrypt-account.key'
+
+letsencrypt_key_path: '{{ letsencrypt_home }}/{{letsencrypt_domain}}.key'
+
+letsencrypt_csr_path: '{{ letsencrypt_home }}/{{letsencrypt_domain}}.csr'
+
+letsencrypt_crt_path: '{{ letsencrypt_home }}/{{letsencrypt_domain}}.crt'
+
+letsencrypt_key_options: '2048'
+
+letsencrypt_csr_subj: '/C=US/ST=Any/L=Wherever/O=Whatever/CN={{letsencrypt_domain}}'
+
+letsencrypt_account_email: ''
+
+letsencrypt_acme_directory_staging: https://acme-staging.api.letsencrypt.org/directory
+
+letsencrypt_acme_directory_production: https://acme-v01.api.letsencrypt.org/directory
+
+letsencrypt_acme_directory: '{{letsencrypt_acme_directory_production}}'
+
+letsencrypt_challenge_type: 'http-01'
+
+letsencrypt_agreement: https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
