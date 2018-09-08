@@ -4,7 +4,9 @@ services:
   # CLI
   cli:
     environment:
-      - ANDOCK_CI=1
+      - ANDOCK=1
+      - ANDOCK_ENVIRONMENT={{ branch }}
+      - ANDOCK_ALIAS={{ alias }}
     volumes:
       - project_root:/var/www:ro,nocopy
 {% if mounts %}
