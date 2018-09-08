@@ -9,6 +9,9 @@ project_home: "{{ andock_home }}/projects/{{ project_name }}"
 # Default checkout branch.
 branch: "master"
 
+# Virtual hosts.
+virtual_hosts: []
+
 # Default docroot folder.
 docroot: "docroot"
 
@@ -85,3 +88,5 @@ letsencrypt_acme_directory: '{{letsencrypt_acme_directory_production}}'
 letsencrypt_challenge_type: 'http-01'
 
 letsencrypt_agreement: https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
+
+letsencrypt_domains: virtual_hosts

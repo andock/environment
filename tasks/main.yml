@@ -96,16 +96,16 @@
 
   - block:
     - name: Lets encrypt!
-      with_dict: "{{ virtual_hosts }}"
+      with_dict: "{{ letsencrypt_domains }}"
       include_tasks: "letsencrypt.yml"
       vars:
         letsencrypt_domain: "{{ item.value }}"
-    tags: ['init', 'update', 'rm']
+    tags: ['init', 'update']
     when: letsencrypt_enable
 
   - name: "Set non mounted filesystem to {{ file_mode_deployed }}"
     file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
-    tags: ['init', 'update']
+    tags: ['init', 'update', 'letsencrypt']
     when: environment_exists
 
   - name: "Run init tasks"
@@ -150,6 +150,15 @@
     tags: ['rm']
     ignore_errors: yes
     when: environment_exists
+
+  - block:
+    - name: Cleanup certs
+      with_dict: "{{ letsencrypt_domains }}"
+      include_tasks: "letsencrypt_rm.yml"
+      vars:
+        letsencrypt_domain: "{{ item.value }}"
+    tags: ['rm']
+    when: letsencrypt_enable
 
   - name: "Remove services (fin rm)"
     command: "fin rm -f"
