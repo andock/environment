@@ -6,6 +6,8 @@ andock_home: "{{ ansible_env.HOME }}/andock"
 
 project_home: "{{ andock_home }}/projects/{{ project_name }}"
 
+environment_home: "{{ project_home }}/{{ project_name }}--{{ branch }}"
+
 # Default checkout branch.
 branch: "master"
 
@@ -15,16 +17,12 @@ virtual_hosts: []
 # Default docroot folder.
 docroot: "docroot"
 
-# Environment root folder.
-envs_path: "{{ project_home }}/envs"
 # Environment folder.
-environment_path: "{{ envs_path }}/{{ project_name }}--{{ branch }}"
+environment_path: "{{ environment_home }}/{{ project_name }}--{{ branch }}__env"
 
-# Shares root folder.
-mounts_path: "{{ project_home }}/mounts"
 # Mount environnmet folder.
-mount_path: "{{ mounts_path }}/{{ project_name }}--{{ branch }}"
-
+mount_path: "{{ environment_home }}/{{ project_name }}--{{ branch }}__mounts
+"
 mounts: []
 
 # Generate fin alias

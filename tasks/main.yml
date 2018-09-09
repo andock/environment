@@ -4,11 +4,11 @@
     stat:
       path: "{{ environment_path }}"
     register: existing_environment_path_before
-    tags: ['init','up','update','test','stop','rm','exec']
+    tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
 
   - name: "Set fact \"environment_exists_before\""
     set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
-    tags: ['init','up','update','test','stop','rm','exec']
+    tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
 
   - name: "Create environment"
     file:
@@ -31,11 +31,11 @@
 
   - name: "Set fact \"environment_exists\""
     set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
-    tags: ['init','up','update','test','stop','rm','exec']
+    tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
 
   - name: "Prepare filesystem"
     file: dest="{{ environment_path }}" mode={{ file_mode_prepare }} recurse=yes follow=no
-    tags: ['init', 'update', 'rm']
+    tags: ['init', 'update', 'rm','up','letsencrypt']
     when: environment_exists
 
   - name: "Pull changes"
@@ -100,12 +100,12 @@
       include_tasks: "letsencrypt.yml"
       vars:
         letsencrypt_domain: "{{ item.value }}"
-    tags: ['init', 'update']
+    tags: ['init', 'update', 'letsencrypt']
     when: letsencrypt_enable
 
   - name: "Set non mounted filesystem to {{ file_mode_deployed }}"
     file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
-    tags: ['init', 'update', 'letsencrypt']
+    tags: ['init', 'update', 'letsencrypt','up']
     when: environment_exists
 
   - name: "Run init tasks"
@@ -168,17 +168,9 @@
     tags: ['rm']
     when: environment_exists
 
-  - name: "Remove mounted folders"
-    file:
-      state: absent
-      path: "{{ mount_path }}/{{ item.src }}"
-    with_items: "{{ mounts }}"
-    tags: ['rm']
-    when: environment_exists
-
   - name: "Remove environment"
     file:
       state: absent
-      path: "{{ environment_path }}"
+      path: "{{ environment_home }}"
     tags: ['rm']
     when: environment_exists

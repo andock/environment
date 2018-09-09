@@ -17,7 +17,7 @@ andock.fin (fin docksal livecycle. )
 Requirements
 ------------
 
-In order to build your apps with Andock CI, you will need:
+In order to build your apps with Andock, you will need:
 
 * Ansible in your deploy machine
 * Docksal

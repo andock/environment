@@ -36,21 +36,18 @@
     acme_directory: '{{letsencrypt_acme_directory|default(omit,true)}}'
     agreement: '{{letsencrypt_agreement|default(omit,true)}}'
   register: letsencrypt_challenge
-  tags: ['init', 'update','letsencrypt']
 
 - name: "Let's Encrypt: Create directories to fulfill letsencrypt challenge"
   file:
     path: '{{docroot_path}}/{{letsencrypt_challenge["challenge_data"][letsencrypt_domain][letsencrypt_challenge_type]["resource"]|dirname}}'
     state: directory
   when: letsencrypt_challenge is changed
-  tags: ['init', 'update', 'letsencrypt']
 
 - name: "Let's Encrypt: Create file to fulfill challenge"
   copy:
     content: '{{letsencrypt_challenge["challenge_data"][letsencrypt_domain][letsencrypt_challenge_type]["resource_value"]}}'
     dest: '{{docroot_path}}/{{letsencrypt_challenge["challenge_data"][letsencrypt_domain][letsencrypt_challenge_type]["resource"]}}'
   when: letsencrypt_challenge is changed
-  tags: ['init', 'update','letsencrypt']
 
 - name: "Let's Encrypt: Update certificate"
   letsencrypt:
@@ -63,10 +60,8 @@
     agreement: '{{letsencrypt_agreement|default(omit,true)}}'
     data: '{{letsencrypt_challenge}}'
   when: letsencrypt_challenge is changed
-  tags: ['init', 'update', 'letsencrypt']
 
 - name: "Let's Encrypt: Restart vhost proxy"
   command: fin system reset vhost-proxy
   when: letsencrypt_challenge is changed
-  tags: ['init', 'update', 'letsencrypt']
 
