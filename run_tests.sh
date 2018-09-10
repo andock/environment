@@ -19,7 +19,7 @@ ls -al ~/andock/projects/demo-project/demo-project--master
 ls -al ~/andock/projects/demo-project/demo-project--master/demo-project--master__env
 
 if [ "$2" = "mounts" ]
-    then touch ~/andock/projects/demo-project/demo-project--master__env/docroot/files/test.txt;
+    then touch ~/andock/projects/demo-project/demo-project--master/demo-project--master__env/docroot/files/test.txt;
 fi
 ansible-playbook -i $inventory_file $config_file --tags update
 
