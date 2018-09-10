@@ -18,13 +18,13 @@ before_install:
   - sudo curl -fsSL get.docksal.io | sh
 install:
   # Install Ansible.
-  - sudo pip install ansible==2.4
+  - sudo pip install ansible==2.6
   - sudo pip install ansible-lint
 script:
 
+  - ansible-lint tests/default.yml
   - ./run_tests.sh "localhost" "default"
   - ./run_tests.sh "localhost" "mounts"
-  - ansible-lint tests/default.yml
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
