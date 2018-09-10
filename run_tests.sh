@@ -15,13 +15,11 @@ git -C demo-project pull || git clone https://github.com/andock/demo-project.git
 ansible-playbook -i $inventory_file $config_file --tags init
 
 ls -al ~/andock/projects/demo-project
-ls -al ~/andock/projects/demo-project/envs
-ls -al ~/andock/projects/demo-project/envs/demo-project--master
+ls -al ~/andock/projects/demo-project
+ls -al ~/andock/projects/demo-project/demo-project--master__env
 
 if [ "$2" = "mounts" ]
-
-    then cd ~/andock/projects/demo-project/demo-project--master__env/docroot/files; touch test.txt
-    exit
+    then touch ~/andock/projects/demo-project/demo-project--master__env/docroot/files/test.txt;
 fi
 ansible-playbook -i $inventory_file $config_file --tags update
 
