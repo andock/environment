@@ -1,9 +1,9 @@
 ---
 - name: Init andock instance
-  hosts: andock-fin-server
+  hosts: andock-server
   gather_facts: true
   roles:
-    - role: fin
+    - role: environment
       git_artifact_repository_path: https://github.com/andock/demo-project.git
       project_name: demo-project
       branch: "master"

@@ -1,5 +1,5 @@
 ---
-- block:
+  block:
   - name: "Check if the environment already exists"
     stat:
       path: "{{ environment_path }}"
@@ -174,3 +174,9 @@
       path: "{{ environment_home }}"
     tags: ['rm']
     when: environment_exists
+  rescue:
+   - debug:
+       msg: 'I caught an error'
+   - command: /bin/false
+   - debug:
+       msg: 'I also never execute :-('

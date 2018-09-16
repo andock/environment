@@ -1,7 +1,7 @@
 andock.fin (fin docksal livecycle. )
 =========
 
-**andock.fin** is a Ansible role which:
+**andock.environment** is a Ansible role which:
 * Checks out or pull a repository (e.g. from github) based on project and branch
 * Configure docsal based on branch.domain (e.g. master-build.myproject.mydomain.de)
 * Runs "fin up" 
@@ -30,7 +30,7 @@ Role Variables
 ```yaml
 ---
 vars:
-  git_repository_path: git@github.com:andock/drupal-8-demo-build.git # The source repository
+  git_artifact_repository: git@github.com:andock/drupal-8-demo-build.git # The source repository
   project_name: drupal-8-demo-build # The name of the project
   branch: "master" # The branch to checkout
   domain: "drupal-8-demo.docksal" # The base domain. The final domain will be master.drupal-8-demo.docksal
