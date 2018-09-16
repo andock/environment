@@ -35,6 +35,8 @@ vars:
   domain: "drupal-8-demo.docksal" # The base domain. The final domain will be master.drupal-8-demo.docksal
   hook_init_tasks: "hooks/init_tasks.yml" #Task file for the project init. Run site-install here.  
   hook_update_tasks: "hooks/update_tasks.yml" #Task file for the project init. Run site-install here.
+  hook_deploy_done: "hooks/deploy_done_tasks.yml" #Task file after deployment was done.
+  hook_deploy_failure: "hooks/hook_deploy_failure.yml" #Task file after deployment failed.
 
 ```
 
