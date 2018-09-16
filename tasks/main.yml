@@ -1,5 +1,5 @@
 ---
-  block:
+- block:
   - name: "Check if the environment already exists"
     stat:
       path: "{{ environment_path }}"
@@ -199,7 +199,7 @@
     tags: ['init', 'update']
     when: environment_exists
 
-  rescue:
+- rescue:
   - name: "Run deploy failed tasks."
     import_tasks: "{{ hook_deploy_done_tasks | default(role_path ~ '/hooks/hook_deploy_done_tasks.yml') }}"
     tags: ['init', 'update']
