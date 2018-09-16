@@ -188,18 +188,18 @@
     tags: ['rm']
     when: environment_exists
 
+  - name: "Run deploy done tasks."
+    import_tasks: "{{ hook_deploy_done_tasks | default(role_path ~ '/hooks/hook_deploy_done_tasks.yml') }}"
+    tags: ['init', 'update']
+    when: environment_exists
+
   - name: "Visit your sites:"
     debug:
       var:  vhosts_result.stdout
     tags: ['init', 'update']
     when: environment_exists
 
-  - name: "Run deploy done tasks."
-    import_tasks: "{{ hook_deploy_done_tasks | default(role_path ~ '/hooks/hook_deploy_done_tasks.yml') }}"
-    tags: ['init', 'update']
-    when: environment_exists
-
-- rescue:
+  rescue:
   - name: "Run deploy failed tasks."
     import_tasks: "{{ hook_deploy_done_tasks | default(role_path ~ '/hooks/hook_deploy_done_tasks.yml') }}"
     tags: ['init', 'update']
