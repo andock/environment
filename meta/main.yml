@@ -1,11 +1,11 @@
 galaxy_info:
   author: Christian Wiedemann
-  description: Drupal docksal build script.
+  description: Andock environment script.
   company: KEY-TEC
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
-  issue_tracker_url: https://github.com/andock/fin/issues
+  issue_tracker_url: https://github.com/andock/environment/issues
 
   # Some suggested licenses:
   # - BSD (default)

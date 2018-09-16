@@ -1,4 +1,4 @@
-andock.fin (fin docksal livecycle. )
+andock.environment
 =========
 
 **andock.environment** is a Ansible role which:
@@ -28,7 +28,6 @@ Role Variables
 --------------
 
 ```yaml
----
 vars:
   git_artifact_repository: git@github.com:andock/drupal-8-demo-build.git # The source repository
   project_name: drupal-8-demo-build # The name of the project
@@ -42,10 +41,10 @@ vars:
 Installation
 ------------
 
-Andock-CI is an Ansible role distributed globally using [Ansible Galaxy](https://galaxy.ansible.com/). In order to install Andock-CI role you can use the following command.
+Andock is an Ansible role distributed globally using [Ansible Galaxy](https://galaxy.ansible.com/). In order to install Andock role you can use the following command.
 
 ```
-$ ansible-galaxy install andock.fin
+$ ansible-galaxy install andock.environment
 ```
 
 Update
@@ -54,7 +53,7 @@ Update
 If you want to update the role, you need to pass **--force** parameter when installing. Please, check the following command:
 
 ```
-$ ansible-galaxy install --force andock.fin
+$ ansible-galaxy install --force andock.environment
 ```
 
 Dependencies
