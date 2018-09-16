@@ -146,12 +146,6 @@
     when: environment_exists
     register: vhosts_result
 
-  - name: "Vhosts:"
-    debug:
-      var:  vhosts_result.stdout
-    tags: ['init', 'update']
-    when: environment_exists
-
   - name: "Stop environment (fin stop)"
     command: fin stop
     args:
@@ -192,6 +186,12 @@
       state: absent
       path: "{{ environment_home }}"
     tags: ['rm']
+    when: environment_exists
+
+  - name: "Visit your sites:"
+    debug:
+      var:  vhosts_result.stdout
+    tags: ['init', 'update']
     when: environment_exists
 
   - name: "Run deploy done tasks."
