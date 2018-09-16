@@ -201,6 +201,6 @@
 
   rescue:
   - name: "Run deploy failed tasks."
-    import_tasks: "{{ hook_deploy_done_tasks | default(role_path ~ '/hooks/hook_deploy_done_tasks.yml') }}"
+    import_tasks: "{{ hook_deploy_failed_tasks | default(role_path ~ '/hooks/hook_deploy_failed_tasks.yml') }}"
     tags: ['init', 'update']
 
