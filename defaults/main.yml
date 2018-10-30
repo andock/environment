@@ -2,9 +2,11 @@
 
 # Default andock home
 
+project_id: "{{ project_name }}"
+
 andock_home: "{{ ansible_env.HOME }}/andock"
 
-project_home: "{{ andock_home }}/projects/{{ project_name }}"
+project_home: "{{ andock_home }}/projects/{{ project_id }}"
 
 environment_home: "{{ project_home }}/{{ branch }}"
 
@@ -18,15 +20,15 @@ virtual_hosts: []
 docroot: "docroot"
 
 # Environment folder.
-environment_path: "{{ environment_home }}/{{ project_name }}--{{ branch }}"
+environment_path: "{{ environment_home }}/{{ project_id }}--{{ branch }}"
 
 # Mount environnmet folder.
-mount_path: "{{ environment_home }}/{{ project_name }}--{{ branch }}__mounts"
+mount_path: "{{ environment_home }}/{{ project_id }}--{{ branch }}__mounts"
 
 mounts: []
 
 # Generate fin alias
-alias: "{{ project_name }}.{{ branch }}"
+alias: "{{ project_id }}.{{ branch }}"
 
 # Default docroot path
 docroot_path: "{{ environment_path }}/{{ docroot }}"
@@ -55,7 +57,7 @@ file_mode_deployed: u=rX,g=rX,o=rX
 target_branch_suffix: ""
 
 # The path to the source repository.
-git_artifact_repository_path:  "{{ project_home }}/repository/{{ project_name }}.git"
+git_artifact_repository_path:  "{{ project_home }}/repository/{{ project_id }}.git"
 
 ## Let's encrypt variables
 
