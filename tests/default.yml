@@ -5,7 +5,8 @@
   roles:
     - role: environment
       git_artifact_repository_path: https://github.com/andock/demo-project.git
-      project_name: demo-project
+      project_name: demo-project-name
+      project_id: demo-project
       branch: "master"
       virtual_hosts:
         default: "{{ branch }}.demo-project-fin.docksal"
