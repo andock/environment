@@ -20,10 +20,10 @@ virtual_hosts: []
 docroot: "docroot"
 
 # Environment folder.
-environment_path: "{{ environment_home }}/{{ project_id }}--{{ branch }}"
+environment_path: "{{ environment_home }}/{{ branch }}-{{ project_id }}"
 
 # Mount environnmet folder.
-mount_path: "{{ environment_home }}/{{ project_id }}--{{ branch }}__mounts"
+mount_path: "{{ environment_home }}/mounts"
 
 mounts: []
 

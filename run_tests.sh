@@ -16,10 +16,10 @@ ansible-playbook -i $inventory_file $config_file --tags init
 
 ls -al ~/andock/projects/demo-project
 ls -al ~/andock/projects/demo-project/master
-ls -al ~/andock/projects/demo-project/master/demo-project--master
+ls -al ~/andock/projects/demo-project/master/master-demo-project
 
 if [ "$2" = "mounts" ]
-    then touch ~/andock/projects/demo-project/master/demo-project--master/docroot/files/test.txt;
+    then touch ~/andock/projects/demo-project/master/master-demo-project/docroot/files/test.txt;
 fi
 ansible-playbook -i $inventory_file $config_file --tags update
 
