@@ -17,6 +17,11 @@ ansible-playbook -i $inventory_file $config_file --tags init
 ls -al ~/andock/projects/demo-project
 ls -al ~/andock/projects/demo-project/master
 ls -al ~/andock/projects/demo-project/master/master-demo-project
+cat ~/andock/projects/demo-project/master/master-demo-project/.docksal/docksal-local.env
+source ~/andock/projects/demo-project/master/master-demo-project/.docksal/docksal-local.env
+if [ "$VIRTUAL_HOST" != "dev.andock.ci" ]
+    then exit 1;
+fi
 
 if [ "$2" = "mounts" ]
     then touch ~/andock/projects/demo-project/master/master-demo-project/docroot/files/test.txt;
