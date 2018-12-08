@@ -27,7 +27,7 @@
   tags: ['init', 'update', 'letsencrypt']
 
 - name: "Let's Encrypt: Start challenge"
-  letsencrypt:
+  acme_certificate:
     account_key: '{{letsencrypt_account_key_path}}'
     csr: '{{letsencrypt_csr_path}}'
     dest: '{{letsencrypt_crt_path}}'
@@ -50,7 +50,7 @@
   when: letsencrypt_challenge is changed
 
 - name: "Let's Encrypt: Update certificate"
-  letsencrypt:
+  acme_certificate:
     account_key: '{{letsencrypt_account_key_path}}'
     csr: '{{letsencrypt_csr_path}}'
     dest: '{{letsencrypt_crt_path}}'

@@ -19,7 +19,7 @@ Requirements
 
 In order to build your apps with Andock, you will need:
 
-* Ansible in your deploy machine
+* Ansible
 * Docksal
 * git on both machines
 
@@ -29,10 +29,24 @@ Role Variables
 
 ```yaml
 vars:
-  git_artifact_repository: git@github.com:andock/drupal-8-demo-build.git # The source repository
-  project_name: drupal-8-demo-build # The name of the project
-  branch: "master" # The branch to checkout
-  domain: "drupal-8-demo.docksal" # The base domain. The final domain will be master.drupal-8-demo.docksal
+  git_artifact_repository_path: https://github.com/andock/demo-project.git
+  project_name: demo-project-name
+  project_id: demo-project
+  branch: "master"
+  mounts:
+    files:
+      path: docroot/files
+
+  virtual_hosts:
+    default:
+      virtual_host: "{{ branch }}.demo-project-fin.docksal"
+      container: web
+    sub:
+      virtual_host: "{{ branch }}.demo2-project-fin.docksal"
+      container: web
+  hook_init_tasks: "hooks/init_tasks.yml"
+  docksal_env:
+    XDEBUG_ENABLED: "0"
   hook_init_tasks: "hooks/init_tasks.yml" #Task file for the project init. Run site-install here.  
   hook_update_tasks: "hooks/update_tasks.yml" #Task file for the project init. Run site-install here.
   hook_deploy_done: "hooks/deploy_done_tasks.yml" #Task file after deployment was done.
