@@ -8,9 +8,18 @@
       project_name: demo-project-name
       project_id: demo-project
       branch: "master"
+
+      mounts:
+        files:
+          path: docroot/files
+
       virtual_hosts:
-        default: "{{ branch }}.demo-project-fin.docksal"
-        sub: "{{ branch }}.demo2-project-fin.docksal"
+        default:
+          virtual_host: "{{ branch }}.demo-project-fin.docksal"
+          container: web
+        sub:
+          virtual_host: "{{ branch }}.demo2-project-fin.docksal"
+          container: web
       hook_init_tasks: "hooks/init_tasks.yml"
       docksal_env:
         XDEBUG_ENABLED: "0"
