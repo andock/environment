@@ -31,7 +31,7 @@ services:
 {% endfor %}
 
     environment:
-      - ANDOCK_CI=1
+      - ANDOCK=1
 {% if mounts %}
     volumes:
 {% for mount in mounts %}
