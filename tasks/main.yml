@@ -213,7 +213,10 @@
     - environment_exists
     - environment_exists_before == false
 
-  - name: "Run deploy failed tasks."
+  - name: "Run deploy failed tasks"
     import_tasks: "{{ hook_deploy_failed_tasks | default(role_path ~ '/hooks/hook_deploy_failed_tasks.yml') }}"
     tags: ['init', 'update']
 
+  - fail:
+      msg: "Environment build failed"
+    tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
