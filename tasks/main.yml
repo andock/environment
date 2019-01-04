@@ -100,7 +100,7 @@
       include_tasks: "letsencrypt.yml"
       vars:
         letsencrypt_domain: "{{ item.value.virtual_host }}"
-      when: "{{ item.value.letsencrypt_enable|default(letsencrypt_enable) }}"
+      when: item.value.letsencrypt_enable|default(letsencrypt_enable)
     tags: ['init', 'update', 'letsencrypt']
     when: letsencrypt_enable
 
