@@ -4,18 +4,8 @@ andock.environment
 =========
 
 **andock.environment** is a Ansible role which:
-* Checks out or pull a repository (e.g. from github) based on project and branch
-* Configure docsal based on branch.domain (e.g. master-build.myproject.mydomain.de)
-* Runs "fin up" 
-* Runs init hook (configurable through hooks/init_tasks.yml)
-* Runs update hook (configurable through hooks/update_tasks.yml)
-* Runs test hook (configurable through hooks/test_tasks.yml)
-* Runs "fin stop"
-* Runs "fin rm"
-* Clears the instance
+Creates updates and remove Andock environments.
   
-**The livecycle can be controlled with tags**
-* Clears the instance
 Requirements
 ------------
 
@@ -74,20 +64,10 @@ If you want to update the role, you need to pass **--force** parameter when inst
 $ ansible-galaxy install --force andock.environment
 ```
 
-Dependencies
-------------
-
-@TODO
-
-Example Playbook
-----------------
-
-@TODO
-
 License
 -------
 
-BSD
+GPL
 
 Author Information
 ------------------
