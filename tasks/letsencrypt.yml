@@ -33,7 +33,7 @@
     dest: '{{letsencrypt_crt_path}}'
     challenge: '{{letsencrypt_challenge_type}}'
     account_email: '{{letsencrypt_account_email|default(omit,true)}}'
-    acme_directory: '{{letsencrypt_acme_directory|default(omit,true)}}'
+    acme_directory: '{{letsencrypt_directory|default(omit,true)}}'
     agreement: '{{letsencrypt_agreement|default(omit,true)}}'
   register: letsencrypt_challenge
 
@@ -56,7 +56,7 @@
     dest: '{{letsencrypt_crt_path}}'
     challenge: '{{letsencrypt_challenge_type}}'
     account_email: '{{letsencrypt_account_email|default(omit,true)}}'
-    acme_directory: '{{letsencrypt_acme_directory|default(omit,true)}}'
+    acme_directory: '{{letsencrypt_directory|default(omit,true)}}'
     agreement: '{{letsencrypt_agreement|default(omit,true)}}'
     data: '{{letsencrypt_challenge}}'
   when: letsencrypt_challenge is changed

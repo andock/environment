@@ -65,25 +65,25 @@ letsencrypt_enable: false
 
 letsencrypt_home: "~/.docksal/certs"
 
-letsencrypt_account_key_path: '{{ letsencrypt_home }}/letsencrypt-account.key'
+letsencrypt_account_key_path: "{{ letsencrypt_home }}/letsencrypt-account.key"
 
-letsencrypt_key_path: '{{ letsencrypt_home }}/{{letsencrypt_domain}}.key'
+letsencrypt_key_path: "{{ letsencrypt_home }}/{{letsencrypt_domain}}.key"
 
-letsencrypt_csr_path: '{{ letsencrypt_home }}/{{letsencrypt_domain}}.csr'
+letsencrypt_csr_path: "{{ letsencrypt_home }}/{{letsencrypt_domain}}.csr"
 
-letsencrypt_crt_path: '{{ letsencrypt_home }}/{{letsencrypt_domain}}.crt'
+letsencrypt_crt_path: "{{ letsencrypt_home }}/{{letsencrypt_domain}}.crt"
 
 letsencrypt_key_options: '2048'
 
-letsencrypt_csr_subj: '/C=US/ST=Any/L=Wherever/O=Whatever/CN={{letsencrypt_domain}}'
+letsencrypt_csr_subj: "/C=US/ST=Any/L=Wherever/O=Whatever/CN={{letsencrypt_domain}}"
 
-letsencrypt_account_email: ''
+letsencrypt_account_email: ""
 
-letsencrypt_acme_directory_staging: https://acme-staging.api.letsencrypt.org/directory
+letsencrypt_directory_staging: https://acme-staging.api.letsencrypt.org/directory
 
-letsencrypt_acme_directory_production: https://acme-v01.api.letsencrypt.org/directory
+letsencrypt_directory_production: https://acme-v01.api.letsencrypt.org/directory
 
-letsencrypt_acme_directory: '{{letsencrypt_acme_directory_production}}'
+letsencrypt_directory: "{{letsencrypt_directory_production}}"
 
 letsencrypt_challenge_type: 'http-01'
 
