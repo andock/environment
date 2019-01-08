@@ -42,7 +42,7 @@
     git:
       repo: "{{ git_artifact_repository_path }}"
       dest: "{{ environment_path }}"
-      version: "{{ branch }}{{target_branch_suffix}}"
+      version: "{{ branch }}{{ target_branch_suffix }}"
       accept_hostkey: true
       force: yes
     tags: ['init','update']
@@ -51,7 +51,7 @@
   - name: "Create mount symlinks"
     file:
       src: "{{ mount_path }}/{{ item.key }}"
-      dest: "{{ environment_path}}/{{ item.value.path }}"
+      dest: "{{ environment_path }}/{{ item.value.path }}"
       state: link
     with_dict: "{{ mounts }}"
     tags: ['init', 'up', 'update']
@@ -114,7 +114,7 @@
     tags: ['init']
     when:
       - environment_exists
-      - environment_exists_before == false
+      - not environment_exists_before
 
   - name: "Add environment alias (fin alias {{ alias }})"
     command: "fin alias {{ environment_path }} {{ alias }}"
@@ -124,14 +124,14 @@
     tags: ['init']
     when:
       - environment_exists
-      - environment_exists_before == false
+      - not environment_exists_before
 
   - name: "Run update tasks"
     import_tasks: "{{ hook_update_tasks | default(role_path ~ '/hooks/hook_update_tasks.yml') }}"
     tags: ['update']
     when:
       - environment_exists
-      - environment_exists_before == true
+      - environment_exists_before
 
   - name: "Run test tasks."
     import_tasks: "{{ hook_test_tasks | default(role_path ~ '/hooks/hook_test_tasks.yml') }}"
@@ -195,14 +195,14 @@
     tags: ['init']
     when:
     - environment_exists
-    - environment_exists_before == false
+    - not environment_exists_before
 
   - name: "Inconsistent environment - Prepare filesystem for deletion"
     file: dest="{{ environment_path }}" mode={{ file_mode_prepare }} recurse=yes follow=no
     tags: ['init']
     when:
     - environment_exists
-    - environment_exists_before == false
+    - not environment_exists_before
 
   - name: "Inconsistent environment - Remove environment"
     file:
@@ -211,12 +211,13 @@
     tags: ['init']
     when:
     - environment_exists
-    - environment_exists_before == false
+    - not environment_exists_before
 
   - name: "Run deploy failed tasks"
     import_tasks: "{{ hook_deploy_failed_tasks | default(role_path ~ '/hooks/hook_deploy_failed_tasks.yml') }}"
     tags: ['init', 'update']
 
-  - fail:
+  - name: "Fail"
+    fail:
       msg: "Environment build failed"
     tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
