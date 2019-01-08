@@ -12,6 +12,7 @@ install:
   - sudo pip install ansible==2.6
   - sudo pip install ansible-lint
 script:
+  - ansible-lint .
   - cd tests
   - ./run_tests.sh "localhost" "default"
 
