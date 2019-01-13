@@ -6,31 +6,23 @@
     - "{{ letsencrypt_home }}"
   loop_control:
     loop_var: letsencrypt_folder
-  tags: ['init', 'letsencrypt']
 
 - name: "Let's Encrypt: Generate account key (if needed)"
   command: openssl genrsa -out {{ letsencrypt_account_key_path|quote }} {{ letsencrypt_key_options }}
   args:
     creates: '{{ letsencrypt_account_key_path }}'
-  tags: ['init', 'update', 'letsencrypt']
 
 - name: "Let's Encrypt: Generate private key (if needed)"
   command: openssl genrsa -out {{ letsencrypt_key_path|quote }} {{ letsencrypt_key_options }}
   args:
     creates: '{{ letsencrypt_key_path }}'
-  tags: ['init', 'update', 'letsencrypt']
 
 - name: "Let's Encrypt: Generate csr (f needed)"
   command: openssl req -out {{ letsencrypt_csr_path|quote }} -key {{ letsencrypt_key_path|quote }}  -subj {{ letsencrypt_csr_subj|quote }} -new
   args:
     creates: '{{ letsencrypt_csr_path }}'
-  tags:
-    - init
-    - update
-    - letsencrypt
-    - skip_ansible_lint
 
-- name: "Let's Encrypt: Start challenge"
+- name: "Let's Encrypt: {{ letsencrypt_domain }}"
   acme_certificate:
     account_key: '{{ letsencrypt_account_key_path }}'
     csr: '{{ letsencrypt_csr_path }}'
@@ -40,6 +32,8 @@
     acme_directory: '{{ letsencrypt_directory|default(omit,true) }}'
     agreement: '{{ letsencrypt_agreement|default(omit,true) }}'
   register: letsencrypt_challenge
+  tags:
+    - print_action
 
 - name: "Let's Encrypt: Create directories to fulfill letsencrypt challenge"
   file:
@@ -68,4 +62,5 @@
 - name: "Let's Encrypt: Restart vhost proxy"
   command: fin system reset vhost-proxy
   when: letsencrypt_challenge is changed
-
+  tags:
+    - print_action
