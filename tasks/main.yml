@@ -174,7 +174,9 @@
     tags:
       - test
       - print_action
-    when: environment_exists
+    when:
+      - environment_exists
+      - hook_test_tasks != ""
 
   - name: "Stop environment (fin stop)"
     command: fin stop
