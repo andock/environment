@@ -1,4 +1,30 @@
 ---
+- name: "Check Andock Server Version"
+  slurp:
+    src: "{{ andock_conf }}/version"
+  register: andock_server_version
+  tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
+
+- name: "Andock Server Version:"
+  debug:
+    msg: "{{ andock_server_version['content']|b64decode }}"
+  tags: ['print_action','init','up','update','test','stop','rm','exec','letsencrypt']
+
+- name: "Andock Server is not up to date"
+  fail:
+    msg: "Minimum required Andock Server Versin: {{ ANDOCK_MIN_SERVER_VERSIOM }}. Installed: {{ andock_server_version['content']|b64decode }}"
+  tags: ['print_action','init','up','update','test','stop','rm','exec','letsencrypt']
+  when:
+    - andock_server_version['content']|b64decode is version(ANDOCK_MIN_SERVER_VERSIOM, '<')
+
+- name: "Check if the environment is protected"
+  fail:
+    msg: "Environment is protected"
+  tags: ['rm']
+  when:
+    - 'branch in protected_branches'
+    - not force_rm
+
 - block:
   - name: "Check if the environment already exists"
     stat:
@@ -10,7 +36,7 @@
     set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
 
-  - name: "Create environment"
+  - name: "Create an environment"
     file:
       state: directory
       path: "{{ environment_path }}"
@@ -128,7 +154,7 @@
       - letsencrypt
     when: letsencrypt_enable
 
-  - name: "Set non mounted filesystem to {{ file_mode_deployed }}"
+  - name: "Set codebase to {{ file_mode_deployed }}"
     file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
     tags:
       - init
@@ -200,7 +226,7 @@
     when: environment_exists
 
   - block:
-    - name: Cleanup certs
+    - name: Cleanup certificates
       with_dict:
         - "{{ letsencrypt_domains }}"
       include_tasks: "letsencrypt_rm.yml"
@@ -253,7 +279,7 @@
     - environment_exists
     - not environment_exists_before
 
-  - name: "Inconsistent environment - Prepare filesystem for deletion"
+  - name: "Inconsistent environment - Prepare codebase for deletion"
     file: dest="{{ environment_path }}" mode={{ file_mode_prepare }} recurse=yes follow=no
     tags: ['init']
     when:

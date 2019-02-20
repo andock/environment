@@ -6,6 +6,8 @@ project_id: "{{ project_name }}"
 
 andock_home: "{{ ansible_env.HOME }}/andock"
 
+andock_conf: "{{ ansible_env.HOME }}/.andock"
+
 project_home: "{{ andock_home }}/projects/{{ project_id }}"
 
 environment_home: "{{ project_home }}/{{ branch }}"
@@ -21,6 +23,13 @@ docroot: "docroot"
 
 # Environment folder.
 environment_path: "{{ environment_home }}/{{ branch }}-{{ project_id }}"
+
+# Protected.
+protected_branches:
+  - master
+  - test
+
+force_rm: false
 
 # Mount environnmet folder.
 mount_path: "{{ environment_home }}/mounts"
