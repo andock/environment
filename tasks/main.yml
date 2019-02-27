@@ -3,17 +3,17 @@
   slurp:
     src: "{{ andock_conf }}/version"
   register: andock_server_version
-  tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
+  tags: ['init','up','update','test','stop','rm','exec','letsencrypt', 'version']
 
 - name: "Andock Server Version:"
   debug:
     msg: "{{ andock_server_version['content']|b64decode }}"
-  tags: ['print_action','init','up','update','test','stop','rm','exec','letsencrypt']
+  tags: ['print_action','init','up','update','test','stop','rm','exec','letsencrypt', 'version']
 
 - name: "Andock Server is not up to date"
   fail:
-    msg: "Minimum required Andock Server Versin: {{ ANDOCK_MIN_SERVER_VERSIOM }}. Installed: {{ andock_server_version['content']|b64decode }}"
-  tags: ['print_action','init','up','update','test','stop','rm','exec','letsencrypt']
+    msg: "Minimum required Andock Server Version: {{ ANDOCK_MIN_SERVER_VERSIOM }}. Installed: {{ andock_server_version['content']|b64decode }}. Run 'andock server update'"
+  tags: ['print_action','init','up','update','test','stop','rm','exec','letsencrypt', 'version']
   when:
     - andock_server_version['content']|b64decode is version(ANDOCK_MIN_SERVER_VERSIOM, '<')
 
@@ -36,7 +36,7 @@
     set_fact: environment_exists_before="{{ existing_environment_path_before.stat.exists }}"
     tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
 
-  - name: "Create an environment"
+  - name: "Create environment"
     file:
       state: directory
       path: "{{ environment_path }}"
