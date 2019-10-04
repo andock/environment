@@ -58,12 +58,14 @@ docksal_local_env_path: templates/.docksal/docksal-local.env
 docksal_local_yml_path: templates/.docksal/docksal-local.yml
 
 # File mode while deployment
-file_mode_prepare: u=rwX,g=rwX
+file_mode_prepare: u=rwX,g=rwX,o=rX
 
 # File mode after deployment
 file_mode_deployed: u=rX,g=rX,o=rX
 
 target_branch_suffix: ""
+
+read_only: true
 
 # The path to the source repository.
 git_artifact_repository_path:  "{{ project_home }}/repository/{{ project_id }}.git"

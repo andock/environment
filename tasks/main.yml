@@ -161,7 +161,11 @@
       - update
       - letsencrypt
       - up
-    when: environment_exists
+    when:
+      - environment_exists
+      - read_only
+
+
 
   - block:
     - name: "Run init tasks"
@@ -244,7 +248,6 @@
       chdir: "{{ environment_path }}"
     tags:
       - rm
-
     when: environment_exists
 
   - name: "Remove environment"
