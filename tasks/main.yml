@@ -52,6 +52,10 @@
     register: existing_environment_path
     tags: ['init','up','update','test','stop','rm','exec']
 
+  - name: "Set fact \"environment_exists\""
+    set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
+    tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
+
   - name: "Create mounts"
     file:
       state: directory
@@ -63,10 +67,6 @@
       - init
       - update
       - print_action
-
-  - name: "Set fact \"environment_exists\""
-    set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
-    tags: ['init','up','update','test','stop','rm','exec','letsencrypt']
 
   - name: "Prepare filesystem"
     file: dest="{{ environment_path }}" mode={{ file_mode_prepare }} recurse=yes follow=no
