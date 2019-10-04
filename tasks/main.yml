@@ -51,6 +51,8 @@
       state: directory
       path: "{{ mount_path }}/{{ item.key }}"
     with_dict: "{{ mounts }}"
+    when:
+      - environment_exists
     tags:
       - init
       - update
@@ -164,8 +166,6 @@
     when:
       - environment_exists
       - read_only
-
-
 
   - block:
     - name: "Run init tasks"
