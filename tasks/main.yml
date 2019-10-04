@@ -97,7 +97,6 @@
       - init
       - up
       - update
-
     when: environment_exists
 
   - name: "Create docksal-local.env"
@@ -154,7 +153,9 @@
       - init
       - update
       - letsencrypt
-    when: letsencrypt_enable
+    when:
+      - letsencrypt_enable
+      - environment_exists
 
   - name: "Set codebase to {{ file_mode_deployed }}"
     file: dest="{{ environment_path }}" mode={{ file_mode_deployed }} recurse=yes follow=no
