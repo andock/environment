@@ -46,6 +46,12 @@
     when:
       - not environment_exists_before
 
+  - name: "Check if the environment exists or has been created"
+    stat:
+      path: "{{ environment_path }}"
+    register: existing_environment_path
+    tags: ['init','up','update','test','stop','rm','exec']
+
   - name: "Create mounts"
     file:
       state: directory
@@ -57,12 +63,6 @@
       - init
       - update
       - print_action
-
-  - name: "Check if the environment exists or has been created"
-    stat:
-      path: "{{ environment_path }}"
-    register: existing_environment_path
-    tags: ['init','up','update','test','stop','rm','exec']
 
   - name: "Set fact \"environment_exists\""
     set_fact: environment_exists="{{ existing_environment_path.stat.exists }}"
