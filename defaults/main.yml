@@ -94,7 +94,7 @@ letsencrypt_account_email: ""
 
 letsencrypt_directory_staging: https://acme-staging.api.letsencrypt.org/directory
 
-letsencrypt_directory_production: https://acme-v01.api.letsencrypt.org/directory
+letsencrypt_directory_production: https://acme-v02.api.letsencrypt.org/directory
 
 letsencrypt_directory: "{{letsencrypt_directory_production}}"
 
