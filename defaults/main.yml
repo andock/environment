@@ -92,7 +92,7 @@ letsencrypt_csr_subj: "/C=US/ST=Any/L=Wherever/O=Whatever/CN={{letsencrypt_domai
 
 letsencrypt_account_email: ""
 
-letsencrypt_directory_staging: https://acme-staging.api.letsencrypt.org/directory
+letsencrypt_directory_staging: https://acme-staging-v02.api.letsencrypt.org/directory
 
 letsencrypt_directory_production: https://acme-v02.api.letsencrypt.org/directory
 
