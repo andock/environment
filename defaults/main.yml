@@ -90,7 +90,7 @@ letsencrypt_key_options: '2048'
 
 letsencrypt_csr_subj: "/C=US/ST=Any/L=Wherever/O=Whatever/CN={{letsencrypt_domain}}"
 
-letsencrypt_account_email: ""
+letsencrypt_account_email: "christian@andock.ci"
 
 letsencrypt_directory_staging: https://acme-staging-v02.api.letsencrypt.org/directory
 

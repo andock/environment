@@ -30,6 +30,7 @@
     challenge: '{{ letsencrypt_challenge_type }}'
     acme_version: '{{ letsencrypt_acme_version }}'
     account_email: '{{ letsencrypt_account_email|default(omit,true) }}'
+    terms_agreed: yes
     acme_directory: '{{ letsencrypt_directory|default(omit,true) }}'
     agreement: '{{ letsencrypt_agreement|default(omit,true) }}'
   register: letsencrypt_challenge
@@ -55,6 +56,7 @@
     dest: '{{ letsencrypt_crt_path }}'
     challenge: '{{ letsencrypt_challenge_type }}'
     acme_version: '{{ letsencrypt_acme_version }}'
+    terms_agreed: yes
     account_email: '{{ letsencrypt_account_email|default(omit,true) }}'
     acme_directory: '{{ letsencrypt_directory|default(omit,true) }}'
     agreement: '{{ letsencrypt_agreement|default(omit,true) }}'
