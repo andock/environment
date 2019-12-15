@@ -188,6 +188,7 @@
     when:
       - environment_exists
       - not environment_exists_before
+
   - block:
     - name: "Run update tasks"
       include_tasks: "{{ hook_update_tasks }}"
@@ -270,6 +271,16 @@
     when:
       - environment_exists
       - hook_deploy_done_tasks != ""
+
+  - name: "Restart environment"
+    command: "fin restart"
+    args:
+      warn: false
+      chdir: "{{ environment_path }}"
+    tags:
+      - update
+      - print_action
+    when: environment_exists
 
   rescue:
   - name: "Inconsistent environment - Remove services (fin rm)"
